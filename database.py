@@ -52,6 +52,13 @@ class account:
         if len(result) == 0:
             return False
         return True
+    def update_password(username, password):
+        SALT = account.generate_random_salt(10)
+        ENCRYPT_PASSWORD = account.generate_encrypt_password(password)+SALT
+        do = f"UPDATE `account` SET `password` = '{ENCRYPT_PASSWORD}' WHERE `username` = '{username}';"
+        cursor.execute(do)
+        sql.commit()
+        return True
 
 # print(account.create("test", "test"))
 # print(account.login("test", "test"))
