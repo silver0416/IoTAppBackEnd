@@ -73,6 +73,11 @@ class account:
         if len(result) == 0:
             return False
         return result[0][0]
+    def change_password(username, old_password, new_password):
+        if account.login(username, old_password):
+            account.update_password(username, new_password)
+            return True
+        return False
     
 
 # print(account.create("test", "test"))
