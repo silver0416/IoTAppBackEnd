@@ -97,3 +97,16 @@ class user_info:
         do = f"UPDATE `user_info` SET `user_nickname` = '{name}', `user_phone` = '{phone}', `user_email` = '{email}' WHERE `user_id` = '{user_id}';"
         cursor.execute(do)
         sql.commit()
+
+class verify:
+    def store_verification_code(type,verification_code ,address):
+        do = f"INSERT INTO `alive_verification_code` (`verify_id`, `type`, `verification_code`,`start_time`, `address`) VALUES (NULL, '{type}', '{verification_code}',CURRENT_TIMESTAMP, '{address}');"
+        cursor.execute(do)
+        sql.commit()
+    def get_verification_code(type, address):
+        do = f"SELECT `verification_code` FROM `verify` WHERE `type` = '{type}' and `address` = '{address}';"
+        cursor.execute(do)
+        result = cursor.fetchall()
+        if len(result) == 0:
+            return False
+        return result[0][0]
