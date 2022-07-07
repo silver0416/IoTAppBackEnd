@@ -66,3 +66,7 @@ class user_info:
         cursor.execute(do)
         result = cursor.fetchall()
         return result
+    def update(user_id, name, phone, email):
+        do = f"UPDATE `user_info` SET `user_nickname` = '{name}', `user_phone` = '{phone}', `user_email` = '{email}' WHERE `user_id` = '{user_id}';"
+        cursor.execute(do)
+        sql.commit()
