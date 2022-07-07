@@ -59,6 +59,21 @@ class account:
         cursor.execute(do)
         sql.commit()
         return True
+    def get_user_id(username):
+        do = f"SELECT `user_id` FROM `account` WHERE `username` = '{username}';"
+        cursor.execute(do)
+        result = cursor.fetchall()
+        if len(result) == 0:
+            return False
+        return result[0][0]
+    def get_username(user_id):
+        do = f"SELECT `username` FROM `account` WHERE `user_id` = '{user_id}';"
+        cursor.execute(do)
+        result = cursor.fetchall()
+        if len(result) == 0:
+            return False
+        return result[0][0]
+    
 
 # print(account.create("test", "test"))
 # print(account.login("test", "test"))
