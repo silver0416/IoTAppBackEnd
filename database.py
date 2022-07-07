@@ -10,7 +10,7 @@ cursor = sql.cursor()
 cursor.execute(do)
 
 
-class account():
+class account:
     def generate_encrypt_password(password):
         return hashlib.sha512(password.encode()).hexdigest()
     def generate_random_salt(length):
@@ -55,3 +55,14 @@ class account():
 
 # print(account.create("test", "test"))
 # print(account.login("test", "test"))
+
+class user_info:
+    def create(user_id, name, phone, email):
+        do = f"INSERT INTO `user_info` (`user_id`, `user_nickname`, `user_phone`, `user_email`) VALUES ('{user_id}', '{name}', '{phone}', '{email}');"
+        cursor.execute(do)
+        sql.commit()
+    def get_user_info(user_id):
+        do = f"SELECT * FROM `user_info` WHERE `user_id` = '{user_id}';"
+        cursor.execute(do)
+        result = cursor.fetchall()
+        return result
