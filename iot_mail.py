@@ -6,7 +6,7 @@ from sendgrid.helpers.mail import Mail
 
 message = Mail(
     from_email='iotkuapp@gmail.com',
-    to_emails='zwei3125@gmail.com',
+    to_emails='',
     subject='None',
     html_content='<strong>and easy to do anywhere, even with Python</strong>')
 try:
