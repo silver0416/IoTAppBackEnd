@@ -1,5 +1,7 @@
 from twilio.base.exceptions import TwilioRestException
 from twilio.rest import Client  # import 套件
+import database
+
 
 account_sid = "sid"  # 請填寫剛剛紀錄的 ACCOUNT SID
 
@@ -12,6 +14,7 @@ client = Client(account_sid, auth_token)
 
 phone_number = '+886'  # 請填寫收驗證碼的手機號碼
 client.verify.services(service_sid).verifications.create(to=phone_number, channel='sms')
+
 
 # # handle twilio 可能引發的 exceptions
 # phone_number = '+886xxxxxxxxx'

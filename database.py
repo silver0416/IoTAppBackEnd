@@ -110,3 +110,10 @@ class verify:
         if len(result) == 0:
             return False
         return result[0][0]
+    def get_verify_time(code,address):
+        do = f"SELECT `start_time` FROM `verify` WHERE `verification_code` = '{code}' and `address` = '{address}';"
+        cursor.execute(do)
+        result = cursor.fetchall()
+        if len(result) == 0:
+            return False
+        return result[0][0]
