@@ -1,0 +1,8 @@
+django>=4.0.0 
+djangorestframework>=3.13.0
+PyMySQL==1.0.2
+django-cors-headers==3.13.0
+PyYAML == 6.0
+dnspython == 2.2.1
+sendgrid == 6.9.7
+sqlalchemy == 1.4.39
