@@ -8,8 +8,8 @@ from django.db import models
 
 class user_info(models.Model):
     user_id = models.AutoField(blank=False,null=False,primary_key=True,auto_created=True)
-    user_name = models.CharField(max_length = 30,blank=False,null=False,unique=True,default=' ')
-    user_password = models.CharField(max_length = 30,blank=False,null=False,default=' ')
+    user_name = models.TextField(blank=False,null=False,default=' ')
+    user_password = models.TextField(blank=False,null=False,default=' ')
     user_nickname = models.CharField(max_length = 30,blank=True,null=True )
     user_phone = models.CharField(max_length = 30,blank=True,null=True )
     user_email = models.EmailField(max_length = 30,blank=False,null=True )
@@ -57,5 +57,5 @@ class device_data(models.Model):
     device_type = models.ForeignKey(device_type, on_delete=models.CASCADE)
     data_value = models.CharField(max_length = 30,blank=False,null=False)
     data_time = models.DateTimeField(auto_now_add=True)
-
+    
 
