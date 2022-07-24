@@ -14,7 +14,7 @@ from pathlib import Path
 import pymysql
 import dns.resolver
 import yaml
-with open('/app/IoTAppBackEnd/secret.yml', 'r') as f:
+with open('secret.yml', 'r') as f:
     secret = yaml.load(f, Loader=yaml.FullLoader)
 
 pymysql.install_as_MySQLdb()

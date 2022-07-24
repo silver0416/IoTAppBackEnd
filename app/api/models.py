@@ -11,8 +11,9 @@ class user_info(models.Model):
     user_name = models.CharField(max_length = 30,blank=False,null=False,unique=True,default=' ')
     user_password = models.CharField(max_length = 30,blank=False,null=False,default=' ')
     user_nickname = models.CharField(max_length = 30,blank=True,null=True )
-    user_phone = models.IntegerField(blank=False,null=True )
+    user_phone = models.CharField(max_length = 30,blank=True,null=True )
     user_email = models.EmailField(max_length = 30,blank=False,null=True )
+
 
 class user_belong_home(models.Model):
     user_belong_home = models.AutoField(blank=False,null=False,primary_key=True,auto_created=True)
@@ -50,3 +51,11 @@ class category_detail(models.Model):
     category_name = models.CharField(max_length = 30,blank=False,null=False)
     category_description = models.CharField(max_length = 30,blank=True,null=False)
     
+class device_data(models.Model):
+    device_data_id = models.AutoField(blank=False,null=False,primary_key=True,auto_created=True)
+    device_id = models.ForeignKey(added_device_list, on_delete=models.CASCADE)
+    device_type = models.ForeignKey(device_type, on_delete=models.CASCADE)
+    data_value = models.CharField(max_length = 30,blank=False,null=False)
+    data_time = models.DateTimeField(auto_now_add=True)
+
+

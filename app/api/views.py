@@ -2,8 +2,8 @@ from cmath import inf
 from django.shortcuts import render
 from rest_framework import viewsets
 # Create your views here.
-from api.models import user_belong_home, user_info,home_list,added_device_list,device_type,alive_verification_code,category_detail
-from api.serializers import user_infoSerializer,user_belong_homeSerializer,home_listSerializer,added_device_listSerializer,device_typeSerializer,alive_verification_codeSerializer,categorySerializer
+from api.models import user_belong_home, user_info,home_list,added_device_list,device_type,alive_verification_code,category_detail,device_data
+from api.serializers import user_infoSerializer,user_belong_homeSerializer,home_listSerializer,added_device_listSerializer,device_typeSerializer,alive_verification_codeSerializer,categorySerializer,device_dataSerializer
 
 class user_infoViewSet(viewsets.ModelViewSet):
 
@@ -39,4 +39,7 @@ class categoryViewSet(viewsets.ModelViewSet):
 
     queryset = category_detail.objects.all()
     serializer_class = categorySerializer
+class device_dataViewSet(viewsets.ModelViewSet):
 
+    queryset = device_data.objects.all()
+    serializer_class = device_dataSerializer

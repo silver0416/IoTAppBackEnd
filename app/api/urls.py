@@ -13,6 +13,7 @@ router.register('added_device_list', views.added_device_listViewSet)
 router.register('device_type', views.device_typeViewSet)
 router.register('alive_verification_code', views.alive_verification_codeViewSet)
 router.register('category', views.categoryViewSet)
+router.register('device_data', views.device_dataViewSet)
 app_name = 'api'
 
 urlpatterns = [

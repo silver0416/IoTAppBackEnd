@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import home_list, user_belong_home, user_info,added_device_list,device_type,alive_verification_code,category_detail
+from api.models import home_list, user_belong_home, user_info,added_device_list,device_type,alive_verification_code,category_detail,device_data
 
 class user_infoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,3 +34,7 @@ class categorySerializer(serializers.ModelSerializer):
         model = category_detail
         fields = ('category_name','category_description')
 
+class device_dataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = device_data
+        fields = ('device_id','device_type','data_value','data_time')
