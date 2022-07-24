@@ -8,11 +8,11 @@ from django.db import models
 
 class user_info(models.Model):
     user_id = models.AutoField(blank=False,null=False,primary_key=True,auto_created=True)
-    user_name = models.CharField(max_length=30,blank=False,null=False,default=' ')
+    user_name = models.CharField(max_length=30,blank=False,null=False,default=' ',unique=True)
     user_password = models.CharField(max_length=30,blank=False,null=False,default=' ')
     user_nickname = models.CharField(max_length = 30,blank=True,null=True )
     user_phone = models.CharField(max_length = 30,blank=True,null=True )
-    user_email = models.EmailField(max_length = 30,blank=False,null=True )
+    user_email = models.EmailField(max_length = 30,blank=False,null=True,unique=True)
 
 
 class user_belong_home(models.Model):
