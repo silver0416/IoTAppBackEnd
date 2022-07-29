@@ -29,7 +29,6 @@ def signupServer():
         while True:
             try:
                 print(t)
-                
                 indata = conn.recv(4096)
                 user.append(indata.decode('utf-8'))
                 if len(indata) == 0: # connection closed
@@ -44,7 +43,6 @@ def signupServer():
                     print(user)
             except:
                 break
-            
 def loginServer():
     HOST = '0.0.0.0'
     PORT = 7558
@@ -69,11 +67,10 @@ def loginServer():
                 indata = conn.recv(4096)
                 user.append(indata.decode('utf-8'))
                 if len(indata) == 0: # connection closed
+                    if (account.login(user[0], user[1])):
+                        conn.send(b'True')
                     conn.close()
                     print('client closed connection.')
-                    encrypt_password = account.generate_encrypt_password(user[1])
-                    print(encrypt_password)
-                    account.update_password(user[0], encrypt_password)
                     break
                 else :
                     t+=1

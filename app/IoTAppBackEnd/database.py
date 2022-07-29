@@ -36,7 +36,7 @@ class account:
             print(e)
             return False
     def login(username, password):
-        do = f"SELECT `password` FROM `api_user_info` WHERE `user_name` = '{username}';"
+        do = f"SELECT `user_password` FROM `api_user_info` WHERE `user_name` = '{username}';"
         cursor.execute(do)
         result = cursor.fetchall()
         if len(result) == 0:
