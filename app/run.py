@@ -5,7 +5,7 @@ import threading
 from IoTAppBackEnd.database import account
 
 def django_server():
-    os.system("python3 manage.py runserver 0.0.0.0:8701")
+    os.system("python manage.py runserver 0.0.0.0:8701")
 
 
 def signupServer():
@@ -68,10 +68,15 @@ def loginServer():
                 user.append(indata.decode('utf-8'))
                 if len(indata) == 0: # connection closed
                     if (account.login(user[0], user[1])):
+                        print('login success')
                         conn.send(b'True')
+                    else:
+                        print('login failed')
+                        conn.send(b'False')
                     conn.close()
                     print('client closed connection.')
                     break
+                    
                 else :
                     t+=1
                     print(user)
