@@ -5,7 +5,7 @@ import hashlib
 
 
 sql = connectMySQL.connectMySQL()
-do = "use IoTApp"
+do = "use IoTApp_server"
 cursor = sql.cursor()
 cursor.execute(do)
 
@@ -17,7 +17,7 @@ class account:
         return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
 
     def create(username, password,salt_length = 10):
-        do = "SELECT `username` FROM `account`;"
+        do = "SELECT `user_name` FROM `api_user_info`;"
         cursor.execute(do)
         result = cursor.fetchall()
         print(result)
@@ -28,7 +28,7 @@ class account:
         ENCRYPT_PASSWORD = account.generate_encrypt_password(password)+SALT
         
         try:
-            do = f"INSERT INTO `account` (`user_id`, `username`, `password`) VALUES (NULL, '{username}', '{ENCRYPT_PASSWORD}');"
+            do = f"INSERT INTO `api_user_info` (`user_id`, `user_name`, `user_password`) VALUES (NULL, '{username}', '{ENCRYPT_PASSWORD}');"
             cursor.execute(do)
             sql.commit()
             return True
@@ -36,7 +36,7 @@ class account:
             print(e)
             return False
     def login(username, password):
-        do = f"SELECT `password` FROM `account` WHERE `username` = '{username}';"
+        do = f"SELECT `password` FROM `api_user_info` WHERE `user_name` = '{username}';"
         cursor.execute(do)
         result = cursor.fetchall()
         if len(result) == 0:
@@ -46,7 +46,7 @@ class account:
         print(SALT)
         ENCRYPT_PASSWORD = account.generate_encrypt_password(password)+SALT
         print(ENCRYPT_PASSWORD)
-        do = f"SELECT `username` FROM `account` WHERE `password` = '{ENCRYPT_PASSWORD}' and `username` = '{username}';"
+        do = f"SELECT `user_name` FROM `api_user_info` WHERE `user_password` = '{ENCRYPT_PASSWORD}' and `user_name` = '{username}';"
         cursor.execute(do)
         result = cursor.fetchall()
         if len(result) == 0:
@@ -55,19 +55,19 @@ class account:
     def update_password(username, password):
         SALT = account.generate_random_salt(10)
         ENCRYPT_PASSWORD = account.generate_encrypt_password(password)+SALT
-        do = f"UPDATE `account` SET `password` = '{ENCRYPT_PASSWORD}' WHERE `username` = '{username}';"
+        do = f"UPDATE `api_user_info` SET `user_password` = '{ENCRYPT_PASSWORD}' WHERE `user_name` = '{username}';"
         cursor.execute(do)
         sql.commit()
         return True
     def get_user_id(username):
-        do = f"SELECT `user_id` FROM `account` WHERE `username` = '{username}';"
+        do = f"SELECT `user_id` FROM `api_user_info` WHERE `user_name` = '{username}';"
         cursor.execute(do)
         result = cursor.fetchall()
         if len(result) == 0:
             return False
         return result[0][0]
     def get_username(user_id):
-        do = f"SELECT `username` FROM `account` WHERE `user_id` = '{user_id}';"
+        do = f"SELECT `username` FROM `api_user_info` WHERE `user_id` = '{user_id}';"
         cursor.execute(do)
         result = cursor.fetchall()
         if len(result) == 0:
