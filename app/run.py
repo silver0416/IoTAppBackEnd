@@ -34,9 +34,7 @@ def signupServer():
                 if len(indata) == 0: # connection closed
                     conn.close()
                     print('client closed connection.')
-                    encrypt_password = account.generate_encrypt_password(user[1])
-                    print(encrypt_password)
-                    account.update_password(user[0], encrypt_password)
+                    account.update_password(user[0], user[1])
                     break
                 else :
                     t+=1
@@ -63,11 +61,8 @@ def loginServer():
         while True:
             try:
                 print(t)
-                
-                indata = conn.recv(4096)
-                user.append(indata.decode('utf-8'))
-                if len(indata) == 0: # connection closed
-                    if (account.login(user[0], user[1])):
+                if t == 2: # connection closed
+                    if (account.login(user[0], user[1]) == True):
                         print('login success')
                         conn.send(b'True')
                     else:
@@ -78,14 +73,16 @@ def loginServer():
                     break
                     
                 else :
+                    indata = conn.recv(4096)
+                    user.append(indata.decode('utf-8'))
                     t+=1
                     print(user)
             except:
                 break
-
+#put thread in here
 threading.Thread(target=signupServer).start()
 threading.Thread(target=loginServer).start()
-  
+#----------------------------------------------------------------------------------------------------------------------
 threading.Thread(target=django_server).start()
 
 
