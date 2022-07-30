@@ -64,10 +64,10 @@ def loginServer():
                 if t == 2: # connection closed
                     if (account.login(user[0], user[1]) == True):
                         print('login success')
-                        conn.send(b'True')
+                        conn.send(b't')
                     else:
                         print('login failed')
-                        conn.send(b'False')
+                        conn.send(b'f')
                     conn.close()
                     print('client closed connection.')
                     break
