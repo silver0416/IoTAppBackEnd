@@ -3,9 +3,11 @@ import os
 import socket
 import threading
 from IoTAppBackEnd.database import account
+from KasaSmartPowerStrip import SmartPowerStrip
+
 
 def django_server():
-    os.system("python manage.py runserver 0.0.0.0:8701")
+    os.system("python app/manage.py runserver 0.0.0.0:8701")
 
 
 def signupServer():
@@ -79,9 +81,60 @@ def loginServer():
                     print(user)
             except:
                 break
+
+def TpLinkSwitchServer():
+        
+    HOST = '0.0.0.0'
+    PORT = 7559
+
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind((HOST, PORT))
+    s.listen(5)
+
+    print('server start at: %s:%s' % (HOST, PORT))
+    print('wait for connection...')
+
+    def remove_upprintable_chars(s):
+        #移除所有不可见字符
+        return ''.join(x for x in s if x.isprintable())
+
+    while True:
+        conn, addr = s.accept()
+        print('connected by ' + str(addr))
+
+        while True:
+            try:
+                power_strip = SmartPowerStrip('192.168.0.19')
+                indata = conn.recv(1024)
+                #print("do sth")
+                if len(indata) == 0: # connection closed    
+                    conn.close()
+                    print('client closed connection.')
+                    break
+                #print("repr:",repr(indata.decode('UTF-8').strip()))
+                #print("after remove",remove_upprintable_chars(indata.decode('UTF-8')))
+                indata = remove_upprintable_chars(indata.decode('UTF-8'))
+                if indata[1:] == "on" or indata[1:] == "off":
+                    print("switch",indata)
+                    power_strip.toggle_plug(indata[1:], plug_num=int(indata[0]))
+                    power_strip.toggle_plug(indata[1:], plug_num=int(indata[0]))
+                    power_strip.toggle_plug(indata[1:], plug_num=int(indata[0]))
+                    power_strip.toggle_plug(indata[1:], plug_num=int(indata[0]))
+                    power_strip.toggle_plug(indata[1:], plug_num=int(indata[0]))
+                    power_strip.toggle_plug(indata[1:], plug_num=int(indata[0]))
+
+                outdata = 'echo ' + indata.decode()
+                conn.send(outdata.encode())
+
+            except:
+                break
+
 #put thread in here
 threading.Thread(target=signupServer).start()
 threading.Thread(target=loginServer).start()
+threading.Thread(target=TpLinkSwitchServer).start()
 #----------------------------------------------------------------------------------------------------------------------
 threading.Thread(target=django_server).start()
 
