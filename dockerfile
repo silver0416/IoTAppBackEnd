@@ -21,4 +21,4 @@ ENV PATH = "/py/bin:$PATH"
 
 USER app
 
-CMD [ "python","run.py"]
+CMD [ "python","manage.py","runserver","0.0.0.0:8701"]

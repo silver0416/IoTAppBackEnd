@@ -6,3 +6,5 @@ PyYAML == 6.0
 dnspython == 2.2.1
 sendgrid == 6.9.7
 sqlalchemy == 1.4.39
+dj_rest_auth == 2.2.5
+django-allauth == 0.51.0
