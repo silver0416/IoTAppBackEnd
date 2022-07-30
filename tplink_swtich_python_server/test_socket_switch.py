@@ -5,7 +5,7 @@ from KasaSmartPowerStrip import SmartPowerStrip
 power_strip = SmartPowerStrip('192.168.0.19')
 
 HOST = '192.168.0.10'
-PORT = 7557
+PORT = 7559
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -32,19 +32,17 @@ while True:
                 conn.close()
                 print('client closed connection.')
                 break
-            print("rev:"+indata.decode())
-            print(type(indata.decode()))
-            print("repr:",repr(indata.decode('UTF-8').strip()))
-            print("after remove",remove_upprintable_chars(indata.decode('UTF-8')))
+            #print("repr:",repr(indata.decode('UTF-8').strip()))
+            #print("after remove",remove_upprintable_chars(indata.decode('UTF-8')))
             indata = remove_upprintable_chars(indata.decode('UTF-8'))
-            if indata == "on" or indata == "off":
+            if indata[1:] == "on" or indata[1:] == "off":
                 print("switch",indata)
-                power_strip.toggle_plug(indata, plug_num=1)
-                power_strip.toggle_plug(indata, plug_num=2)
-                power_strip.toggle_plug(indata, plug_num=3)
-                power_strip.toggle_plug(indata, plug_num=4)
-                power_strip.toggle_plug(indata, plug_num=5)
-                power_strip.toggle_plug(indata, plug_num=6)
+                power_strip.toggle_plug(indata[1:], plug_num=int(indata[0]))
+                power_strip.toggle_plug(indata[1:], plug_num=int(indata[0]))
+                power_strip.toggle_plug(indata[1:], plug_num=int(indata[0]))
+                power_strip.toggle_plug(indata[1:], plug_num=int(indata[0]))
+                power_strip.toggle_plug(indata[1:], plug_num=int(indata[0]))
+                power_strip.toggle_plug(indata[1:], plug_num=int(indata[0]))
 
             outdata = 'echo ' + indata.decode()
             conn.send(outdata.encode())
