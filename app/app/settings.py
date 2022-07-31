@@ -104,7 +104,7 @@ AUTH_USER_MODEL = 'api.User'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['base.html'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,4 +1,3 @@
-from allauth.account.views import confirm_email
 from django.urls import path, include, re_path
 from rest_framework.authtoken import views
 from .router import router
