@@ -1,0 +1,41 @@
+{% extends "allauth/base.html" %}
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>{% block head_title %}{% endblock %}</title>
+    </head><body>{% block extra_head %}
+    {% endblock %}
+  
+  
+    {% block body %}
+
+    {% if messages %}
+    <div>
+      <strong>Messages:</strong>
+      <ul>
+        {% for message in messages %}
+        <li>{{message}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div>
+      <strong>Menu:</strong>
+      <ul>
+        {% if user.is_authenticated %}
+        <li><a href="file:///C:/Python310/Lib/site-packages/allauth/templates/account/%7B%%20url%20'account_logout'%20%%7D">Sign Out</a></li>
+        {% else %}
+        <li><a href="file:///C:/Python310/Lib/site-packages/allauth/templates/account/%7B%%20url%20'account_login'%20%%7D">Sign In</a></li>
+        <li><a href="file:///C:/Python310/Lib/site-packages/allauth/templates/account/%7B%%20url%20'account_signup'%20%%7D">Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    {% block content %}
+    {% endblock %}
+    {% endblock %}
+    {% block extra_body %}
+    {% endblock %}
+  
+
+</body></html>
