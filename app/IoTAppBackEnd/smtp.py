@@ -3,7 +3,7 @@ import smtplib
 import random
 from email.mime.text import MIMEText
 from email.header import Header
-import database
+# import database
 import yaml
 with open('secret.yml', 'r') as f:
     secret = yaml.load(f, Loader=yaml.FullLoader)
