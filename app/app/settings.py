@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from distutils.command.config import config
 from pathlib import Path
 import pymysql
 import dns.resolver
@@ -42,27 +43,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
     'rest_framework.authtoken',
-    'dj_rest_auth',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
+
     'api.apps.UserConfig',
+
+    'djoser',
+
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
 ]
-
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/?verification=1'
-ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/?verification=1'
-
-SITE_ID = 1
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -75,9 +67,27 @@ REST_FRAMEWORK = {
     ],
 }
 
-REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'api.serializers.userSerializer',
-    'REGISTER_SERIALIZER': 'api.serializers.userSerializer'
+AUTH_USER_MODEL = 'api.User'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = secret['smtp']['host']
+EMAIL_HOST_USER = secret['smtp']['username']
+EMAIL_HOST_PASSWORD = secret['smtp']['password']
+EMAIL_PORT = secret['smtp']['port']
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = secret['smtp']['from']
+DOMAIN= '192.168.100.2:8000'
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    'SEND_ACTIVATION_EMAIL': True,
+    'ACTIVATION_URL': 'activation/{uid}/{token}',
+    'SEND_CONFIRMATION_EMAIL': True,
+    "SERIALIZERS": {
+        'user': 'api.serializers.userSerializer',
+        'user_create': 'api.serializers.userSerializer',
+    }
 }
 
 MIDDLEWARE = [
@@ -92,12 +102,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'app.urls'
 
-AUTH_USER_MODEL = 'api.User'
+
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['base.html'],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -115,7 +125,7 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-domain = secret['account']['domain']
+domain =  secret['account']['domain']
 srvInfo = {}
 srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
 for srv in srv_records:

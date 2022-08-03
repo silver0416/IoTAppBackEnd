@@ -34,7 +34,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    user_id = models.AutoField(blank=False,
+    uid = models.AutoField(blank=False,
                                null=False,
                                primary_key=True,
                                auto_created=True)
@@ -49,7 +49,7 @@ class User(AbstractBaseUser):
                               blank=False,
                               null=True,
                               unique=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
 
     objects = UserManager()
@@ -77,7 +77,7 @@ class user_belong_home(models.Model):
                                         null=False,
                                         primary_key=True,
                                         auto_created=True)
-    user_id = models.ForeignKey(User,
+    uid = models.ForeignKey(User,
                                 related_name='belong_home',
                                 on_delete=models.CASCADE)
     home_id = models.ForeignKey('home_list',
