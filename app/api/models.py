@@ -114,7 +114,7 @@ class added_device_list(models.Model):
                                        null=False,
                                        primary_key=True,
                                        auto_created=True)
-    added_time = models.DateTimeField(auto_now_add=True)
+    added_time = models.DateTimeField(auto_now=True)
     home_id = models.ForeignKey(home_list, on_delete=models.CASCADE)
     device_type_id = models.ForeignKey(device_type, on_delete=models.CASCADE)
 
