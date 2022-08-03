@@ -69,14 +69,14 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'api.User'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = secret['smtp']['host']
 EMAIL_HOST_USER = secret['smtp']['username']
 EMAIL_HOST_PASSWORD = secret['smtp']['password']
 EMAIL_PORT = secret['smtp']['port']
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret['smtp']['from']
-DOMAIN= '192.168.100.2:8000'
+DOMAIN= '192.168.1.14:8000'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
@@ -86,7 +86,8 @@ DJOSER = {
     'SEND_CONFIRMATION_EMAIL': True,
     "SERIALIZERS": {
         'user': 'api.serializers.userSerializer',
-        'user_create': 'api.serializers.userSerializer',
+        'current_user': 'api.serializers.userSerializer',
+        
     }
 }
 
@@ -125,7 +126,7 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-domain =  secret['account']['domain']
+domain = secret['account']['domain']
 srvInfo = {}
 srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
 for srv in srv_records:
