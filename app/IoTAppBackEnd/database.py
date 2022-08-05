@@ -1,6 +1,6 @@
 import random
 import string
-from IoTAppBackEnd import connectMySQL
+import connectMySQL
 import hashlib
 
 
@@ -117,3 +117,12 @@ class verify:
         if len(result) == 0:
             return False
         return result[0][0]
+
+class dataStorage:
+    def dht11_data_store(humidity, temperature,device_id):
+        do = f"INSERT INTO `api_device_data` (`data_value`, `device_id_id`,`device_type_id`) VALUES ('{humidity}','{device_id}','1');"
+        cursor.execute(do)
+        sql.commit()
+        do = f"INSERT INTO `api_device_data` (`data_value`, `device_id_id`,`device_type_id`) VALUES ('{temperature}','{device_id}','2');"
+        cursor.execute(do)
+        sql.commit()
