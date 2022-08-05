@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-tw">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>{% block title %}{% endblock %}</title>
+   
+    <style type="text/css">
+      body {
+        background-color: #fffbf1;
+      }
+      #center {
+        width: max-content;
+        height: max-content;
+       
+        position: absolute; /*絕對位置*/
+        top: 50%; /*從上面開始算，下推 50% (一半) 的位置*/
+        left: 50%; /*從左邊開始算，右推 50% (一半) 的位置*/
+        margin-top: -100px; /*高度的一半*/
+        margin-left: -250px; /*寬度的一半*/
+      }
+      #container {
+        background-color: #faf0dd;
+        border: 2px;
+        border-radius: 15px;
+        text-align: center;
+        width: 500px;
+        height: 100px;
+        margin: 0 auto;
+        font-family: -apple-system, BlinkMacSystemFont, Hiragino Sans GB, Roboto,
+          Segoe UI, Microsoft Yahei, 微软雅黑, Oxygen-Sans, Ubuntu, Cantarell,
+          Helvetica, Arial, STHeiti, sans-serif, Apple Color Emoji,
+          Segoe UI Emoji, Segoe UI Symbol;
+      }
+
+      h2 {
+        font-size: xx-large;
+        color: #cda16d;
+        letter-spacing: 20px;
+        line-height: 100px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="center">
+      <div id="container">
+        {% if messages %}
+          {% for message in messages %}
+            <h2{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h2>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+     <script>
+        var timer = setTimeout(function(){window.close()}, 3000);
+    </script>
+  </body>
+</html>

@@ -1,7 +1,6 @@
 from rest_framework import viewsets
 # Create your views here.
 from .models import *
-# from .serializers import user_infoSerializer, user_belong_homeSerializer, home_listSerializer, added_device_listSerializer, device_typeSerializer, alive_verification_codeSerializer, categorySerializer, device_dataSerializer
 from .serializers import *
 
 
