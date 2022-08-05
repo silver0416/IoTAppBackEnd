@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from distutils.command.config import config
 from pathlib import Path
 import pymysql
+import os
 import dns.resolver
 import yaml
 with open('secret.yml', 'r') as f:
@@ -43,12 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'django.contrib.sites',
     'rest_framework',
     'rest_framework.authtoken',
-
     'api.apps.UserConfig',
-
     'djoser',
 
     # 'allauth',
@@ -66,28 +65,30 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
-
+SITE_ID = 1
 AUTH_USER_MODEL = 'api.User'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = secret['smtp']['host']
 EMAIL_HOST_USER = secret['smtp']['username']
 EMAIL_HOST_PASSWORD = secret['smtp']['password']
 EMAIL_PORT = secret['smtp']['port']
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret['smtp']['from']
-DOMAIN= '192.168.1.14:8000'
+DOMAIN = '192.168.1.14:8000'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
     "USER_CREATE_PASSWORD_RETYPE": True,
     'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'activation/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/{uid}/{token}',
     'SEND_CONFIRMATION_EMAIL': True,
+    'SET_PASSWORD_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_RETYPE': True,
     "SERIALIZERS": {
         'user': 'api.serializers.userSerializer',
         'current_user': 'api.serializers.userSerializer',
-        
     }
 }
 
@@ -103,12 +104,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'app.urls'
 
-
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,7 +125,7 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-domain = secret['account']['domain']
+domain =  secret['account']['domain']
 srvInfo = {}
 srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
 for srv in srv_records:
