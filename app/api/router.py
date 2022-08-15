@@ -10,4 +10,5 @@ router.register('alive_verification_code',
                 alive_verification_codeViewSet)
 router.register('category', categoryViewSet)
 router.register('device_data', device_dataViewSet)
+router.register('mode_key_data', mode_key_dataViewSet)
 app_name = 'api'

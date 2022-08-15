@@ -54,3 +54,9 @@ class device_dataSerializer(serializers.ModelSerializer):
     class Meta:
         model = device_data
         fields = ('device_id', 'device_type', 'data_value', 'data_time')
+
+class mode_key_dataSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = mode_key_data
+        fields = ('mode_key_data_id', 'home_id', 'tplink_switch_mode_key','mode_key_time')

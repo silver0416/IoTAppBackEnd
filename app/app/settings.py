@@ -16,7 +16,7 @@ import pymysql
 import os
 import dns.resolver
 import yaml
-with open('secret.yml', 'r') as f:
+with open('../../secret.yml', 'r') as f:
     secret = yaml.load(f, Loader=yaml.FullLoader)
 
 pymysql.install_as_MySQLdb()
@@ -75,7 +75,7 @@ EMAIL_HOST_PASSWORD = secret['smtp']['password']
 EMAIL_PORT = secret['smtp']['port']
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret['smtp']['from']
-DOMAIN = '192.168.1.14:8000'
+DOMAIN = '127.0.0.1:8000'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
@@ -125,12 +125,15 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-domain =  secret['account']['domain']
-srvInfo = {}
-srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
-for srv in srv_records:
-    srvInfo['port'] = srv.port
-port = srvInfo['port']
+# domain =  secret['account']['domain']
+# srvInfo = {}
+# srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
+# for srv in srv_records:
+#     srvInfo['port'] = srv.port
+# port = srvInfo['port']
+
+domain ="127.0.0.1"
+port = 3306
 
 DATABASES = {
     'default': {
@@ -140,6 +143,9 @@ DATABASES = {
         'PASSWORD': secret['account']['password'],
         'HOST': domain,
         'PORT': port,
+        'OPTIONS': {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
     },
 }
 

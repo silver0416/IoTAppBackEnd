@@ -50,3 +50,8 @@ class device_dataViewSet(viewsets.ModelViewSet):
 
     queryset = device_data.objects.all()
     serializer_class = device_dataSerializer
+
+class mode_key_dataViewSet(viewsets.ModelViewSet):
+    
+    queryset = mode_key_data.objects.all()
+    serializer_class = mode_key_dataSerializer
