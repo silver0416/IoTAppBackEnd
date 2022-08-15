@@ -4,15 +4,14 @@ from .router import router
 from .views import *
 
 urlpatterns = [
-    path('auth/api', include(router.urls)),
-    path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.authtoken')),
+    path('', include(router.urls)),
+    path('', include('djoser.urls.authtoken')),
     path('activation/<str:uid>/<str:token>/',
          request_user_activation,
          name='request_user_activation'),
     path('password/reset/<str:uid>/<str:token>/',
          reset_user_password,
          name='reset_user_password'),
-    path('chat/<str:room_name>/', room, name='room'),
-    path('chat/', index, name='index'),
+#     path('chat/<str:room_name>/', room, name='room'),
+#     path('chat/', index, name='index'),
 ]
