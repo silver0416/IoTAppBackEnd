@@ -37,7 +37,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser):
     user_uid = models.AutoField(
         blank=False, null=False, primary_key=True, auto_created=True
     )
@@ -72,11 +72,11 @@ class home_list(models.Model):
     home_id = models.AutoField(
         blank=False, null=False, primary_key=True, auto_created=True
     )
-    home_address = models.CharField(max_length=30, blank=False, null=False)
+    home_name = models.CharField(max_length=30, blank=False, null=False)
     user = models.ManyToManyField(User, blank=False)
 
     def __str__(self) -> str:
-        return str(self.home_id) + ":" + self.home_address
+        return f'家庭ID: {self.home_id}\t家庭名稱:{self.home_name}\t成員:({" / ".join(list(self.user.all().values_list("email", flat=True)))})'
 
 
 class home_admin(models.Model):
@@ -85,7 +85,7 @@ class home_admin(models.Model):
     admin = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return str(self.home_id) + ":" + self.admin.username
+        return f'管理員ID: {self.home_id}\t家庭{self.home.home_id}: {self.home.home_name}\t管理員:{self.admin.email}'
 
 
 # class user_belong_home(models.Model):
