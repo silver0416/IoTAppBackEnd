@@ -74,7 +74,7 @@ EMAIL_HOST_PASSWORD = secret['smtp']['password']
 EMAIL_PORT = secret['smtp']['port']
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret['smtp']['from']
-DOMAIN = '192.168.100.2:8000'
+DOMAIN = '192.168.1.14:8000'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',

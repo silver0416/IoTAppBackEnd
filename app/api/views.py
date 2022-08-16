@@ -21,7 +21,7 @@ def request_user_activation(request, uid, token):
     """
     protocol = 'http://'
     web_url = protocol + request.get_host()
-    post_url = web_url + "/user/activation/"
+    post_url = web_url + "/auth/users/activation/"
     post_data = {"uid": uid, "token": token}
     requests.post(post_url, data=post_data)
     messages.success(request, '信箱啟用成功!')
@@ -46,7 +46,7 @@ def reset_user_password(request, **kwargs):
             're_new_password': password_confirmation
         }
 
-        djoser_password_reset_url = 'user/reset_password_confirm/'
+        djoser_password_reset_url = '/auth/users/reset_password_confirm/'
         protocol = 'http'
         url = '{0}://{1}/{2}'.format(protocol, current_site,
                                      djoser_password_reset_url)
