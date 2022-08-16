@@ -133,3 +133,9 @@ class device_data(models.Model):
     device_type = models.ForeignKey(device_type, on_delete=models.CASCADE)
     data_value = models.CharField(max_length=30, blank=False, null=False)
     data_time = models.DateTimeField(auto_now_add=True)
+
+class HomePermission(models.Model):
+   class Meta:
+       permissions = (
+           ("home_permission", "Can access home"),
+       )

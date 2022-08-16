@@ -145,15 +145,15 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-domain =  secret['account']['domain']
-srvInfo = {}
-srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
-for srv in srv_records:
-    srvInfo['port'] = srv.port
-port = srvInfo['port']
+# domain =  secret['account']['domain']
+# srvInfo = {}
+# srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
+# for srv in srv_records:
+#     srvInfo['port'] = srv.port
+# port = srvInfo['port']
 
-# domain = '192.168.100.6'
-# port = 3002
+domain = '127.0.0.1'
+port = 3306
 
 DATABASES = {
     'default': {
