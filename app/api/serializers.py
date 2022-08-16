@@ -1,3 +1,4 @@
+from urllib import request
 from rest_framework import serializers
 from api.models import *
 
@@ -7,18 +8,18 @@ class userSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = "__all__"
-class user_belong_homeSerializer(serializers.ModelSerializer):
 
+class homeAdminSerializer(serializers.ModelSerializer):
+ 
     class Meta:
-        model = user_belong_home
-        fields = ('user_id', 'home_id')
+        model = home_admin
+        fields = '__all__'
 
 
-class home_listSerializer(serializers.ModelSerializer):
-
+class homeSerializer(serializers.ModelSerializer):
     class Meta:
         model = home_list
-        fields = ('home_address', 'home_owner')
+        fields = "__all__"
 
 
 class added_device_listSerializer(serializers.ModelSerializer):
@@ -33,14 +34,6 @@ class device_typeSerializer(serializers.ModelSerializer):
     class Meta:
         model = device_type
         fields = ('device_type_name', 'device_type_description', 'category')
-
-
-class alive_verification_codeSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = alive_verification_code
-        fields = ('type', 'verification_code', 'address')
-
 
 class categorySerializer(serializers.ModelSerializer):
 
