@@ -75,6 +75,7 @@ EMAIL_PORT = secret['smtp']['port']
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret['smtp']['from']
 DOMAIN = '192.168.0.10:8000'
+# DOMAIN = 'api.bap5.cc'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
