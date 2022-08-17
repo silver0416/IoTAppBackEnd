@@ -13,4 +13,6 @@ urlpatterns = [
     path('password/reset/<str:uid>/<str:token>/',
          reset_user_password,
          name='reset_user_password'),
+#     path('chat/<str:room_name>/', room, name='room'),
+#     path('chat/', index, name='index'),
 ] 

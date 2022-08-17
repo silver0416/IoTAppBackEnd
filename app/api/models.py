@@ -143,3 +143,8 @@ class mode_key_data(models.Model):
     tplink_switch_mode_key = models.CharField(max_length=6, blank=False, null=False)
     mode_key_time = models.DateTimeField(auto_now_add=True)
     
+class HomePermission(models.Model):
+   class Meta:
+       permissions = (
+           ("home_permission", "Can access home"),
+       )

@@ -155,9 +155,6 @@ CHANNEL_LAYERS = {
 domain ="192.168.0.10"
 port = 3306
 
-# domain = '192.168.100.6'
-# port = 3002
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
