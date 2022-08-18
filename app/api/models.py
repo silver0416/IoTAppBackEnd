@@ -67,6 +67,10 @@ class User(AbstractBaseUser):
     def is_staff(self):
         return self.is_admin
 
+    class Meta:
+        verbose_name = "使用者"
+        verbose_name_plural = "使用者"
+
 
 class home_list(models.Model):
     home_id = models.AutoField(
@@ -75,8 +79,14 @@ class home_list(models.Model):
     home_name = models.CharField(max_length=30, blank=False, null=False)
     user = models.ManyToManyField(User, blank=False)
 
-    def __str__(self) -> str:
-        return f'家庭ID: {self.home_id}\t家庭名稱:{self.home_name}\t成員:({" / ".join(list(self.user.all().values_list("email", flat=True)))})'
+    def __str__(self):
+        return self.home_name
+
+    
+
+    class Meta:
+        verbose_name = "家庭"
+        verbose_name_plural = "家庭"
 
 
 class home_admin(models.Model):
@@ -85,7 +95,11 @@ class home_admin(models.Model):
     admin = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f'管理員ID: {self.home_id}\t家庭{self.home.home_id}: {self.home.home_name}\t管理員:{self.admin.email}'
+        return f"管理員ID: {self.home_id}\t家庭{self.home.home_id}: {self.home.home_name}\t管理員:{self.admin.email}"
+
+    class Meta:
+        verbose_name = "家庭管理員"
+        verbose_name_plural = "家庭管理員"
 
 
 # class user_belong_home(models.Model):
