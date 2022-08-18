@@ -10,5 +10,5 @@ dj_rest_auth == 2.2.5
 django-allauth == 0.51.0
 djoser == 2.1.0
 channels==3.0.5
-channels_redis==3.4.1
+channels_redis==4.0.0b1
 django-guardian == 2.4.0
