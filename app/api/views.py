@@ -1,7 +1,6 @@
 import requests
 from django.shortcuts import render
 from django.contrib import messages
-from django.contrib.sites.models import Site
 from rest_framework.decorators import (
     api_view,
     permission_classes,
@@ -20,7 +19,7 @@ def request_user_activation(request, uid, token):
     """ 
     Intermediate view to activate a user's email. 
     """
-    protocol = 'https://' if request.is_secure() else 'http://'
+    protocol = 'http://'
     web_url = protocol + request.get_host()
     post_url = web_url + "/auth/users/activation/"
     post_data = {"uid": uid, "token": token}
@@ -34,7 +33,8 @@ def request_user_activation(request, uid, token):
 def reset_user_password(request, **kwargs):
     # uses djoser to reset password
     if request.POST:
-        current_site = Site.objects.get_current()
+        current_site = request.get_host()
+        # Site.objects.get_current()
         # #names of the inputs in the password reset form
         password = request.POST.get('new_password')
         password_confirmation = request.POST.get('re_new_password')
@@ -46,11 +46,8 @@ def reset_user_password(request, **kwargs):
             're_new_password': password_confirmation
         }
 
-        djoser_password_reset_url = 'auth/users/reset_password_confirm/'
+        djoser_password_reset_url = '/auth/users/reset_password_confirm/'
         protocol = 'http'
-        headers = {'content-Type': 'application/json'}
-        if bool(request) and not request.is_secure():
-            protocol = 'http'
         url = '{0}://{1}/{2}'.format(protocol, current_site,
                                      djoser_password_reset_url)
         response = requests.post(url,data=payload)
@@ -73,3 +70,13 @@ def reset_user_password(request, **kwargs):
         form = resetPassword()
         context = {'form': form}
         return render(request, 'password_reset_from_key.html',context)
+
+
+# def room(request, room_name):
+#     return render(request, 'room.html', {'room_name': room_name})
+
+
+# def index(request):
+#     return render(request, 'index.html')
+
+

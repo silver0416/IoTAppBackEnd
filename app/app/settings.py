@@ -44,11 +44,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
     'rest_framework',
     'rest_framework.authtoken',
-    'api.apps.UserConfig',
+    'api',
     'djoser',
+    'channels',
+    'guardian',
 
     # 'allauth',
     # 'allauth.account',
@@ -65,9 +66,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
-SITE_ID = 1
 AUTH_USER_MODEL = 'api.User'
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = secret['smtp']['host']
 EMAIL_HOST_USER = secret['smtp']['username']
@@ -75,6 +74,7 @@ EMAIL_HOST_PASSWORD = secret['smtp']['password']
 EMAIL_PORT = secret['smtp']['port']
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret['smtp']['from']
+# DOMAIN = 'api.bap5.cc'
 DOMAIN = '192.168.1.14:8000'
 
 DJOSER = {
@@ -119,18 +119,42 @@ TEMPLATES = [
         },
     },
 ]
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # default
+    'guardian.backends.ObjectPermissionBackend',
+)
+# WSGI_APPLICATION = 'app.wsgi.application'
 
-WSGI_APPLICATION = 'app.wsgi.application'
+ASGI_APPLICATION = 'app.asgi.application'
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    },
+}
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-domain =  secret['account']['domain']
-srvInfo = {}
-srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
-for srv in srv_records:
-    srvInfo['port'] = srv.port
-port = srvInfo['port']
+# domain =  secret['account']['domain']
+# srvInfo = {}
+# srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
+# for srv in srv_records:
+#     srvInfo['port'] = srv.port
+# port = srvInfo['port']
+
+domain = '127.0.0.1'
+port = 3306
 
 DATABASES = {
     'default': {
@@ -140,6 +164,9 @@ DATABASES = {
         'PASSWORD': secret['account']['password'],
         'HOST': domain,
         'PORT': port,
+        'OPTIONS': {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
     },
 }
 
