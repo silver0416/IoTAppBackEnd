@@ -16,7 +16,9 @@ RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     /py/bin/pip install -r /requirements.txt && \
     adduser --disabled-password --no-create-home app && \
-    apk add tk
+    apk add tk && \
+    apk add --no-cache bash && \
+    apk add vim
 
 ENV PATH = "/py/bin:$PATH"
 
