@@ -72,11 +72,11 @@ def reset_user_password(request, **kwargs):
         return render(request, 'password_reset_from_key.html',context)
 
 
-# def room(request, room_name):
-#     return render(request, 'room.html', {'room_name': room_name})
+def room(request, room_name):
+    return render(request, 'room.html', {'room_name': room_name})
 
 
-# def index(request):
-#     return render(request, 'index.html')
+def index(request):
+    return render(request, 'index.html')
 
 

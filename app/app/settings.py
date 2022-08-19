@@ -153,13 +153,8 @@ for srv in srv_records:
     srvInfo['port'] = srv.port
 port = srvInfo['port']
 
-<<<<<<< HEAD
 domain = '192.168.100.6'
 port = 3002
-=======
-# domain = '127.0.0.1'
-domain = 'sql2.bap5.cc'
->>>>>>> 912567db908cb26f1be7b259c4c7575a50f77460
 
 DATABASES = {
     'default': {
