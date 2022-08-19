@@ -45,7 +45,6 @@ urlpatterns = [
         reset_user_password,
         name="reset_user_password",
     ),
-    #     re_path('^auth/home_list/$', homeViewSet.as_view()),
-    #     path('chat/<str:room_name>/', room, name='room'),
-    #     path('chat/', index, name='index'),
+    path('chat/<str:room_name>/', room, name='room'),
+    path('chat/', index, name='index'),
 ]
