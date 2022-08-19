@@ -153,8 +153,8 @@ CHANNEL_LAYERS = {
 #     srvInfo['port'] = srv.port
 # port = srvInfo['port']
 
-domain = '127.0.0.1'
-port = 3306
+domain = '192.168.100.6'
+port = 3002
 
 DATABASES = {
     'default': {
