@@ -38,10 +38,10 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    user_uid = models.AutoField(
-        blank=False, null=False, primary_key=True, auto_created=True
-    )
-    username = models.CharField(max_length=30, blank=False, null=False, unique=True)
+    # user_uid = models.AutoField(
+        # blank=False, null=False, primary_key=True, auto_created=True
+    # )
+    username = models.CharField(max_length=30,primary_key=True, blank=False, null=False, unique=True)
     password = models.TextField(blank=False, null=False, default=" ")
     user_nickname = models.CharField(max_length=30, blank=True, null=True)
     user_phone = models.CharField(max_length=30, blank=True, null=True)
@@ -77,12 +77,10 @@ class home_list(models.Model):
         blank=False, null=False, primary_key=True, auto_created=True
     )
     home_name = models.CharField(max_length=30, blank=False, null=False)
-    user = models.ManyToManyField(User, blank=False)
+    user = models.ManyToManyField(User,related_name="detail", blank=False)
 
     def __str__(self):
         return self.home_name
-
-    
 
     class Meta:
         verbose_name = "家庭"
@@ -143,24 +141,18 @@ class device_data(models.Model):
     device_data_id = models.AutoField(
         blank=False, null=False, primary_key=True, auto_created=True
     )
-    device_id = models.ForeignKey(added_device_list, on_delete=models.CASCADE)
+    device_id = models.ForeignKey(device_list, on_delete=models.CASCADE)
     device_type = models.ForeignKey(device_type, on_delete=models.CASCADE)
     data_value = models.CharField(max_length=30, blank=False, null=False)
     data_time = models.DateTimeField(auto_now_add=True)
 
+
 class mode_key_data(models.Model):
-    mode_key_data_id = models.AutoField(blank=False,
-                                        null=False,
-                                        primary_key=True,
-                                        auto_created=True)
+    mode_key_data_id = models.AutoField(
+        blank=False, null=False, primary_key=True, auto_created=True
+    )
     home_id = models.ForeignKey(home_list, on_delete=models.CASCADE)
     tplink_switch_mode_key = models.CharField(max_length=6, blank=False, null=False)
-    ac_temperature = models.SmallIntegerField(max_length=2,blank=False, null=False,default=25)  
-    ac_mode = models.CharField(max_length=6, blank=False, null=False,default="")
+    ac_temperature = models.SmallIntegerField(blank=False, null=False, default=25)
+    ac_mode = models.CharField(max_length=6, blank=False, null=False, default="")
     mode_key_time = models.DateTimeField(auto_now_add=True)
-    
-class HomePermission(models.Model):
-   class Meta:
-       permissions = (
-           ("home_permission", "Can access home"),
-       )

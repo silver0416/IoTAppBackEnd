@@ -24,7 +24,7 @@ class homeAdminViewSet(viewsets.ModelViewSet):
         serializer = homeSerializer(queryset, many=True)
         home_id = request.data.get("home")
         home_obj = home_list.objects.filter(home_id=home_id).get()
-        admin = User.objects.get(user_uid=request.data.get("admin"))
+        admin = User.objects.get(username=request.data.get("admin"))
         if admin in home_obj.user.all():
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -90,8 +90,9 @@ class homeViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         request_user = list(
             map(
-                lambda x: User.objects.filter(user_uid=x).get(),
+                lambda x: User.objects.filter(username=x).get(),
                 request.data.getlist("user"),
+                #  request.data.get("user"),
             )
         )
         if (len(request_user)) > 1 or request.user not in request_user:
@@ -113,12 +114,16 @@ class homeViewSet(viewsets.ModelViewSet):
         object_id = kwargs.get("pk")
         admin = home_admin.objects.filter(home_id=object_id).get()
         home = home_list.objects.filter(home_id=object_id).get()
+        
         request_user = list(
             map(
-                lambda x: User.objects.filter(user_uid=x).get(),
+                lambda x: User.objects.filter(username=x).get(),
                 request.data.getlist("user"),
+                # request.data.get("user"),
             )
         )
+      
+        print(request_user)
         if admin.admin not in request_user:
             return Response(
                 {"message": "錯誤請求，管理員不能退出家庭"}, status=status.HTTP_400_BAD_REQUEST
@@ -138,8 +143,8 @@ class homeViewSet(viewsets.ModelViewSet):
 
 class added_device_listViewSet(viewsets.ModelViewSet):
 
-    queryset = added_device_list.objects.all()
-    serializer_class = added_device_listSerializer
+    queryset = device_list.objects.all()
+    serializer_class = device_listSerializer
 
 
 class device_typeViewSet(viewsets.ModelViewSet):

@@ -16,7 +16,7 @@ import pymysql
 import os
 import dns.resolver
 import yaml
-with open('../../secret.yml', 'r') as f:
+with open('secret.yml', 'r') as f:
     secret = yaml.load(f, Loader=yaml.FullLoader)
 
 pymysql.install_as_MySQLdb()
@@ -75,9 +75,9 @@ EMAIL_PORT = secret['smtp']['port']
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret['smtp']['from']
 
-DOMAIN = '192.168.0.10:8000'
+# DOMAIN = '192.168.0.10:8000'
 # DOMAIN = 'api.bap5.cc'
-# DOMAIN = '192.168.1.14:8000'
+DOMAIN = '192.168.100.2:8000'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
@@ -125,7 +125,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # default
     'guardian.backends.ObjectPermissionBackend',
 )
-# WSGI_APPLICATION = 'app.wsgi.application'
+WSGI_APPLICATION = 'app.wsgi.application'
 
 ASGI_APPLICATION = 'app.asgi.application'
 
@@ -148,15 +148,15 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-domain =  secret['account']['domain']
-srvInfo = {}
-srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
-for srv in srv_records:
-    srvInfo['port'] = srv.port
-port = srvInfo['port']
+# domain =  secret['account']['domain']
+# srvInfo = {}
+# srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
+# for srv in srv_records:
+#     srvInfo['port'] = srv.port
+# port = srvInfo['port']
 
-domain ="192.168.0.10"
-port = 3306
+domain ="192.168.100.6"
+port = 3002
 
 DATABASES = {
     'default': {

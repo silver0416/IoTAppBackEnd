@@ -22,10 +22,10 @@ class homeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class added_device_listSerializer(serializers.ModelSerializer):
+class device_listSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = added_device_list
+        model = device_list
         fields = ('added_time', 'device_type_id', 'home_id')
 
 
