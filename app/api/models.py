@@ -147,3 +147,20 @@ class device_data(models.Model):
     device_type = models.ForeignKey(device_type, on_delete=models.CASCADE)
     data_value = models.CharField(max_length=30, blank=False, null=False)
     data_time = models.DateTimeField(auto_now_add=True)
+
+class mode_key_data(models.Model):
+    mode_key_data_id = models.AutoField(blank=False,
+                                        null=False,
+                                        primary_key=True,
+                                        auto_created=True)
+    home_id = models.ForeignKey(home_list, on_delete=models.CASCADE)
+    tplink_switch_mode_key = models.CharField(max_length=6, blank=False, null=False)
+    ac_temperature = models.SmallIntegerField(max_length=2,blank=False, null=False,default=25)  
+    ac_mode = models.CharField(max_length=6, blank=False, null=False,default="")
+    mode_key_time = models.DateTimeField(auto_now_add=True)
+    
+class HomePermission(models.Model):
+   class Meta:
+       permissions = (
+           ("home_permission", "Can access home"),
+       )
