@@ -122,8 +122,8 @@ class device_type(models.Model):
     category = models.ForeignKey("category_detail", on_delete=models.CASCADE)
 
 
-class added_device_list(models.Model):
-    added_device_id = models.AutoField(
+class device_list(models.Model):
+    device = models.AutoField(
         blank=False, null=False, primary_key=True, auto_created=True
     )
     added_time = models.DateTimeField(auto_now=True)
