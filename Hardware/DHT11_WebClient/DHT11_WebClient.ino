@@ -1,11 +1,12 @@
 #include <Arduino.h>
 #include <WiFi.h>
+#include <WiFiClientSecure.h>
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 #include <DHT.h>
 
-const char *ssid = "ssid";
-const char *password = "password";
+const char *ssid = "your-ssid";
+const char *password = "your-password";
 
 WebSocketsClient webSocketClient;
 
@@ -13,7 +14,7 @@ WiFiClient client;
 
 char path[] = "/ws/chat/temp/";
 
-char host[] = "192.168.100.2";
+char host[] = "api.wtbigak.cc";
 
 const uint16_t port = 8000;
 
@@ -133,7 +134,8 @@ void setup()
     {
         Serial.println("not connected");
     }
-    webSocketClient.begin(host, port, path);
+    // webSocketClient.begin(host, port, path);
+    webSocketClient.beginSSL(host,443,path);
     webSocketClient.onEvent(webSocketEvent);
     if (webSocketClient.isConnected())
     {
