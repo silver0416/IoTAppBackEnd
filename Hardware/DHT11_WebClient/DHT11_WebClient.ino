@@ -1,14 +1,10 @@
-/**
- *
- *
- *
- */
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
+#include <DHT.h>
 
-const char *ssid = "your-ssid";
+const char *ssid = "ssid";
 const char *password = "password";
 
 WebSocketsClient webSocketClient;
@@ -21,11 +17,24 @@ char host[] = "192.168.100.2";
 
 const uint16_t port = 8000;
 
-StaticJsonDocument<200> doc;
+StaticJsonDocument<100> doc;
 
 #define DEBUG_SERIAL Serial
 
 #define USE_SERIAL Serial1
+
+//宣告DHT11資料讀取物件
+#define DHTPIN 4
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+
+// 宣告讀取溫溼度的變數
+String jsonString;
+String pinStatus = "";
+float temperature;
+float humidity;
+int interval = 5000;
+unsigned long previousMillis = 0;
 
 void hexdump(const void *mem, uint32_t len, uint8_t cols = 16)
 {
@@ -59,7 +68,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
         break;
     case WStype_TEXT:
         USE_SERIAL.printf("[WSc] get text: %s\n", payload);
-
+        uploadData();
         // send message to server
         // webSocketClient.sendTXT("message here");
         break;
@@ -78,6 +87,17 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
         break;
     }
 }
+void uploadData()
+{
+    JsonObject root = doc.to<JsonObject>();
+    temperature = dht.readTemperature();
+    humidity = dht.readHumidity();
+    doc["message"] = "溫度:"+String(temperature)+"\t濕度:"+String(humidity);
+    serializeJson(doc, jsonString);
+    Serial.println(jsonString);
+    webSocketClient.sendTXT(jsonString);
+    jsonString = "";
+    }
 
 void setup()
 {
@@ -113,57 +133,19 @@ void setup()
     {
         Serial.println("not connected");
     }
-    webSocketClient.begin(host,port,path);
+    webSocketClient.begin(host, port, path);
     webSocketClient.onEvent(webSocketEvent);
-    // webSocketClient.setReconnectInterval(5000);
+    if (webSocketClient.isConnected())
+    {
+        Serial.println("connected");
+        pinMode(2, OUTPUT);
+        digitalWrite(2, HIGH);
+    }
+    webSocketClient.setReconnectInterval(interval);
 }
 
 void loop()
 {
     webSocketClient.loop();
-
-    // if (!client.connect(host, port))
-    // {
-    //     Serial.println("Connection failed.");
-    //     Serial.println("Waiting 5 seconds before retrying...");
-    //     delay(5000);
-    //     return;
-    // }
-    // else if (!client.connected())
-    // {
-    //     Serial.print("Connecting to ");
-    //     Serial.println(host);
-    // }
-
-    // // This will send a request to the server
-    // // uncomment this line to send an arbitrary string to the server
-    // // client.print("Send this data to the server");
-    // // uncomment this line to send a basic document request to the server
-    // client.print("Hello world!!");
-
-    // int maxloops = 0;
-
-    // // wait for the server's reply to become available
-    // while (!client.available() && maxloops < 1000)
-    // {
-
-    //     maxloops++;
-    //     delay(1); // delay 1 msec
-    // }
-    // if (client.available() > 0)
-    // {
-    //     // read back one line from the server
-    //     String line = client.readStringUntil('\r');
-    //     Serial.println(line);
-    // }
-    // else
-    // {
-    //     Serial.println("client.available() timed out ");
-    // }
-
-    // // Serial.println("Closing connection.");
-    // // client.stop();
-
-    // // Serial.println("Waiting 5 seconds before restarting...");
-    // delay(1000);
+    uploadData();
 }
