@@ -1,6 +1,7 @@
 django>=4.0.0 
 djangorestframework>=3.13.0
 PyMySQL==1.0.2
+djoser == 2.1.0
 django-cors-headers==3.13.0
 PyYAML == 6.0
 dnspython == 2.2.1
@@ -8,9 +9,7 @@ sendgrid == 6.9.7
 sqlalchemy == 1.4.39
 dj_rest_auth == 2.2.5
 django-allauth == 0.51.0
-djoser == 2.1.0
 channels==3.0.5
-tuya-connector-python == 0.1.2
+# tuya-connector-python == 0.1.2
 channels_redis==4.0.0b1
 django-guardian == 2.4.0
-

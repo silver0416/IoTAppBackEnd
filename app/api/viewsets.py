@@ -91,7 +91,7 @@ class homeViewSet(viewsets.ModelViewSet):
         request_user = list(
             map(
                 lambda x: User.objects.filter(username=x).get(),
-                request.data.getlist("user"),
+                request.data.get("user"),
                 #  request.data.get("user"),
             )
         )
@@ -118,7 +118,7 @@ class homeViewSet(viewsets.ModelViewSet):
         request_user = list(
             map(
                 lambda x: User.objects.filter(username=x).get(),
-                request.data.getlist("user"),
+                request.data.get("user"),
                 # request.data.get("user"),
             )
         )

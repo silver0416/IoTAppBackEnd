@@ -1,0 +1,7 @@
+{
+    "sketch": "DHT11.ino",
+    "configuration": "FlashFreq=40,UploadSpeed=115200,DebugLevel=none",
+    "board": "esp32:esp32:nodemcu-32s",
+    "output": "./build",
+    "port": "COM4"
+}

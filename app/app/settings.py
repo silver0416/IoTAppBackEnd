@@ -79,6 +79,7 @@ DEFAULT_FROM_EMAIL = secret['smtp']['from']
 # DOMAIN = 'api.bap5.cc'
 DOMAIN = '192.168.0.13:8000'
 
+
 DJOSER = {
     'LOGIN_FIELD': 'email',
     "USER_CREATE_PASSWORD_RETYPE": True,
@@ -103,6 +104,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CSRF_TRUSTED_ORIGINS = ['https://api.bap5.cc']
 
 ROOT_URLCONF = 'app.urls'
 
@@ -148,15 +151,17 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# domain =  secret['account']['domain']
-# srvInfo = {}
-# srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
-# for srv in srv_records:
-#     srvInfo['port'] = srv.port
-# port = srvInfo['port']
+domain =  secret['account']['domain']
+srvInfo = {}
+srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
+for srv in srv_records:
+    srvInfo['port'] = srv.port
+port = srvInfo['port']
 
 domain ="192.168.0.13"
 port = 3306
+# domain ="192.168.100.6"
+# port = 3002
 
 DATABASES = {
     'default': {

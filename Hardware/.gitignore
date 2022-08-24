@@ -1,5 +1,4 @@
 __pycache__/
 *.py[cod]
 secret.yml
-.vscode/
 build/
