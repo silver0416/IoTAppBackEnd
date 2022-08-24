@@ -52,4 +52,4 @@ class mode_key_dataSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = mode_key_data
-        fields = ('mode_key_data_id', 'home_id', 'tplink_switch_mode_key','ac_temperature','ac_mode','mode_key_time')
+        fields = ('mode_key_data_id','mode_key_name', 'home_id', 'tplink_switch_mode_key','ac_temperature','ac_switch','mode_key_time')
