@@ -75,14 +75,8 @@ EMAIL_PORT = secret['smtp']['port']
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret['smtp']['from']
 
-<<<<<<< HEAD
-DOMAIN = '192.168.100.2:8000'
-# DOMAIN = 'api.bap5.cc'
-=======
-# DOMAIN = '192.168.0.10:8000'
-# DOMAIN = 'api.bap5.cc'
-DOMAIN = '192.168.0.13:8000'
->>>>>>> 208b784dbffd5e628e2f7d6d53d2785c5cfcbf8c
+# DOMAIN = '192.168.100.2:8000'
+DOMAIN = 'api.bap5.cc'
 
 
 DJOSER = {
@@ -156,22 +150,15 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# domain =  secret['account']['domain']
-# srvInfo = {}
-# srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
-# for srv in srv_records:
-#     srvInfo['port'] = srv.port
-# port = srvInfo['port']
+domain =  secret['account']['domain']
+srvInfo = {}
+srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
+for srv in srv_records:
+    srvInfo['port'] = srv.port
+port = srvInfo['port']
 
-<<<<<<< HEAD
-domain ="192.168.100.6"
-port = 3002
-=======
-domain ="192.168.0.13"
-port = 3306
 # domain ="192.168.100.6"
 # port = 3002
->>>>>>> 208b784dbffd5e628e2f7d6d53d2785c5cfcbf8c
 
 DATABASES = {
     'default': {
