@@ -151,8 +151,10 @@ class mode_key_data(models.Model):
     mode_key_data_id = models.AutoField(
         blank=False, null=False, primary_key=True, auto_created=True
     )
+    mode_key_name = models.CharField(max_length=30, blank=False, null=False,default=False)
     home_id = models.ForeignKey(home_list, on_delete=models.CASCADE)
     tplink_switch_mode_key = models.CharField(max_length=6, blank=False, null=False)
     ac_temperature = models.SmallIntegerField(blank=False, null=False, default=25)
-    ac_mode = models.CharField(max_length=6, blank=False, null=False, default="")
+    # ac_mode = models.CharField(max_length=6, blank=False, null=False, default="")
+    ac_switch = models.BooleanField(blank=False, null=False, default=False)
     mode_key_time = models.DateTimeField(auto_now_add=True)
