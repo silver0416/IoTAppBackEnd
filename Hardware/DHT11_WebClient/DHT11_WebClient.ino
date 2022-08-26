@@ -5,24 +5,22 @@
 #include <ArduinoJson.h>
 #include <DHT.h>
 
-const char *ssid = "your-ssid";
-const char *password = "your-password";
+const char *ssid = "ssid";
+const char *password = "password";
 
-WebSocketsClient webSocketClient;
+WebSocketsClient websocket;
 
 WiFiClient client;
 
 char path[] = "/ws/chat/temp/";
 
-char host[] = "api.wtbigak.cc";
+char host[] = "192.168.100.2";
 
 const uint16_t port = 8000;
 
 StaticJsonDocument<100> doc;
 
 #define DEBUG_SERIAL Serial
-
-#define USE_SERIAL Serial1
 
 //宣告DHT11資料讀取物件
 #define DHTPIN 4
@@ -31,27 +29,10 @@ DHT dht(DHTPIN, DHTTYPE);
 
 // 宣告讀取溫溼度的變數
 String jsonString;
-String pinStatus = "";
 float temperature;
 float humidity;
-int interval = 5000;
+int interval = 60000;
 unsigned long previousMillis = 0;
-
-void hexdump(const void *mem, uint32_t len, uint8_t cols = 16)
-{
-    const uint8_t *src = (const uint8_t *)mem;
-    USE_SERIAL.printf("\n[HEXDUMP] Address: 0x%08X len: 0x%X (%d)", (ptrdiff_t)src, len, len);
-    for (uint32_t i = 0; i < len; i++)
-    {
-        if (i % cols == 0)
-        {
-            USE_SERIAL.printf("\n[0x%08X] 0x%08X: ", (ptrdiff_t)src, i);
-        }
-        USE_SERIAL.printf("%02X ", *src);
-        src++;
-    }
-    USE_SERIAL.printf("\n");
-}
 
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 {
@@ -59,46 +40,50 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     switch (type)
     {
     case WStype_DISCONNECTED:
-        USE_SERIAL.printf("[WSc] Disconnected!\n");
+        DEBUG_SERIAL.printf("[WSc] Disconnected!\n");
+        digitalWrite(LED_BUILTIN, LOW);
         break;
     case WStype_CONNECTED:
-        USE_SERIAL.printf("[WSc] Connected to url: %s\n", payload);
-
+        DEBUG_SERIAL.printf("[WSc] Connected to url: %s\n", payload);
+        digitalWrite(LED_BUILTIN, HIGH);
         // send message to server when Connected
         // webSocketClient.sendTXT("Connected");
         break;
     case WStype_TEXT:
-        USE_SERIAL.printf("[WSc] get text: %s\n", payload);
-        uploadData();
+        if (deserializeJson(doc, payload))
+        {
+            DEBUG_SERIAL.printf("[WSc] DeserializeJson() failed: %s\n", deserializeJson(doc, payload).c_str());
+            return;
+        }
+        DEBUG_SERIAL.printf("[WSc] get text: %s\n", doc["message"].as<String>().c_str());
+        if (doc["message"] == "on")
+        {
+            digitalWrite(LED_BUILTIN, HIGH);
+        }
+        else if (doc["message"] == "off")
+        {
+            digitalWrite(LED_BUILTIN, LOW);
+        }
         // send message to server
         // webSocketClient.sendTXT("message here");
         break;
-    case WStype_BIN:
-        USE_SERIAL.printf("[WSc] get binary length: %u\n", length);
-        hexdump(payload, length);
-
-        // send data to server
-        // webSocket.sendBIN(payload, length);
-        break;
-    case WStype_ERROR:
-    case WStype_FRAGMENT_TEXT_START:
-    case WStype_FRAGMENT_BIN_START:
-    case WStype_FRAGMENT:
-    case WStype_FRAGMENT_FIN:
-        break;
     }
 }
-void uploadData()
+
+void sendData()
 {
     JsonObject root = doc.to<JsonObject>();
-    temperature = dht.readTemperature();
-    humidity = dht.readHumidity();
-    doc["message"] = "溫度:"+String(temperature)+"\t濕度:"+String(humidity);
-    serializeJson(doc, jsonString);
-    Serial.println(jsonString);
-    webSocketClient.sendTXT(jsonString);
-    jsonString = "";
+    if (digitalRead(LED_BUILTIN) == HIGH)
+    {
+        temperature = dht.readTemperature();
+        humidity = dht.readHumidity();
     }
+    doc["message"] = "溫度:" + String(temperature) + "\t" + "濕度:" + String(humidity);
+    serializeJson(doc, jsonString);
+    DEBUG_SERIAL.println(doc["message"].as<String>().c_str());
+    websocket.sendTXT(jsonString);
+    jsonString = "";
+}
 
 void setup()
 {
@@ -112,42 +97,36 @@ void setup()
 
     DEBUG_SERIAL.println();
     DEBUG_SERIAL.println();
-    DEBUG_SERIAL.print("Waiting for WiFi... ");
+    DEBUG_SERIAL.println("Waiting for WiFi... ");
 
     while (WiFi.status() != WL_CONNECTED)
     {
-        Serial.print(".");
+        DEBUG_SERIAL.print(".");
         delay(500);
     }
 
     DEBUG_SERIAL.println("");
     DEBUG_SERIAL.println("WiFi connected");
-    DEBUG_SERIAL.println("IP address: ");
+    DEBUG_SERIAL.print("IP address: ");
     DEBUG_SERIAL.println(WiFi.localIP());
 
-    delay(5000);
-    if (client.connect(host, 8000))
-    {
-        Serial.println("connected");
-    }
-    else
-    {
-        Serial.println("not connected");
-    }
-    // webSocketClient.begin(host, port, path);
-    webSocketClient.beginSSL(host,443,path);
-    webSocketClient.onEvent(webSocketEvent);
-    if (webSocketClient.isConnected())
-    {
-        Serial.println("connected");
-        pinMode(2, OUTPUT);
-        digitalWrite(2, HIGH);
-    }
-    webSocketClient.setReconnectInterval(interval);
+    delay(3000);
+
+    websocket.begin(host, port, path);
+    // webSocketClient.beginSSL(host, 443, path);
+    websocket.onEvent(webSocketEvent);
+    websocket.setReconnectInterval(5000);
+
+    pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop()
 {
-    webSocketClient.loop();
-    uploadData();
+    websocket.loop();
+    unsigned long currentMillis = millis();
+    if (currentMillis - previousMillis >= interval)
+    {
+        sendData();
+        previousMillis = currentMillis;
+    }
 }
