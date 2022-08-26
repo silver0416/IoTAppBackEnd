@@ -168,3 +168,10 @@ class mode_key_dataViewSet(viewsets.ModelViewSet):
     
     queryset = mode_key_data.objects.all()
     serializer_class = mode_key_dataSerializer
+
+    def get_queryset(self):
+    
+        queryset = super().get_queryset()
+        home = home_list.objects.filter(user=self.request.user).get()
+        print(home) 
+        return queryset

@@ -76,7 +76,9 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret['smtp']['from']
 
 # DOMAIN = '192.168.100.2:8000'
-DOMAIN = 'api.bap5.cc'
+# DOMAIN = 'api.bap5.cc'
+DOMAIN = '192.168.0.13:8000'
+
 
 
 DJOSER = {
@@ -159,6 +161,9 @@ port = srvInfo['port']
 
 # domain ="192.168.100.6"
 # port = 3002
+
+domain ="192.168.0.13"
+port = 3306
 
 DATABASES = {
     'default': {
