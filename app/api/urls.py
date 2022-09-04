@@ -15,7 +15,7 @@ router.register("category", categoryViewSet)
 router.register("device_data", device_dataViewSet)
 router.register("users", UserViewSet)
 router.register("mode_key_data", mode_key_dataViewSet)
-app_name = "api"
+app_name = "api"    
 
 urlpatterns = [
     path("auth/", include(router.urls)),

@@ -18,7 +18,6 @@ class homeAdminViewSet(viewsets.ModelViewSet):
 
     serializer_class = homeAdminSerializer
 
-   
     def create(self, request, *args, **kwargs):
         queryset = home_list.objects.all()
         serializer = homeSerializer(queryset, many=True)
@@ -38,22 +37,23 @@ class homeAdminViewSet(viewsets.ModelViewSet):
                 {"message": "錯誤請求，使用者不在這個家庭裡"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-    def update(self,request,*args,**kwargs):
+
+    def update(self, request, *args, **kwargs):
         object_id = kwargs.get("pk")
         query = home_admin.objects.filter(home_id=object_id).get()
-        home = home_admin.objects.filter(home=request.data.get('home')).get()
-        if query!=home:
+        home = home_admin.objects.filter(home=request.data.get("home")).get()
+        if query != home:
             return Response(
                 {"message": "錯誤請求，無法修改其他家庭管理員"}, status=status.HTTP_400_BAD_REQUEST
             )
-        print(query,home)
-        print(query==home)
-        print(request.data.get('home'))
+        print(query, home)
+        print(query == home)
+        print(request.data.get("home"))
         # print(request.data.get('home')==home.home)
-        # if request.data.get('home') 
+        # if request.data.get('home')
 
         print(home_admin)
-        return super().update(request,*args,**kwargs)
+        return super().update(request, *args, **kwargs)
 
     def get_queryset(self):
 
@@ -96,7 +96,9 @@ class homeViewSet(viewsets.ModelViewSet):
             )
         )
         if (len(request_user)) > 1 or request.user not in request_user:
-            return Response({"message": "尚未建立家庭，無法加人"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "尚未建立家庭，無法加人"}, status=status.HTTP_400_BAD_REQUEST
+            )
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -114,7 +116,7 @@ class homeViewSet(viewsets.ModelViewSet):
         object_id = kwargs.get("pk")
         admin = home_admin.objects.filter(home_id=object_id).get()
         home = home_list.objects.filter(home_id=object_id).get()
-        
+
         request_user = list(
             map(
                 lambda x: User.objects.filter(username=x).get(),
@@ -122,7 +124,7 @@ class homeViewSet(viewsets.ModelViewSet):
                 # request.data.get("user"),
             )
         )
-      
+
         print(request_user)
         if admin.admin not in request_user:
             return Response(
@@ -164,14 +166,8 @@ class device_dataViewSet(viewsets.ModelViewSet):
     queryset = device_data.objects.all()
     serializer_class = device_dataSerializer
 
+
 class mode_key_dataViewSet(viewsets.ModelViewSet):
-    
+
     queryset = mode_key_data.objects.all()
     serializer_class = mode_key_dataSerializer
-
-    def get_queryset(self):
-    
-        queryset = super().get_queryset()
-        home = home_list.objects.filter(user=self.request.user).get()
-        print(home) 
-        return queryset
