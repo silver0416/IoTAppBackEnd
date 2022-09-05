@@ -135,4 +135,6 @@ class mode_key_data(models.Model):
     ac_temperature = models.SmallIntegerField(blank=False, null=False, default=25)
     # ac_mode = models.CharField(max_length=6, blank=False, null=False, default="")
     ac_switch = models.BooleanField(blank=False, null=False, default=False)
+    fan_level = models.SmallIntegerField(blank=False, null=False, default=1)
+    fan_switch = models.BooleanField(blank=False, null=False, default=False)
     mode_key_time = models.DateTimeField(auto_now_add=True)
