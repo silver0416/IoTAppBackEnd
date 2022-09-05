@@ -19,40 +19,18 @@ class homeAdminViewSet(viewsets.ModelViewSet):
     serializer_class = homeAdminSerializer
 
     def create(self, request, *args, **kwargs):
-        queryset = home_list.objects.all()
-        serializer = homeSerializer(queryset, many=True)
-        home_id = request.data.get("home")
-        home_obj = home_list.objects.filter(home_id=home_id).get()
+        return Response(
+            {"message": "錯誤請求，不能直接新增家庭管理員"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    def update(self, request, *args, **kwargs):
+        home_obj = home_list.objects.filter(home_id=self.get_object().home_id).get()
         admin = User.objects.get(username=request.data.get("admin"))
-        if admin in home_obj.user.all():
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            self.perform_create(serializer)
-            headers = self.get_success_headers(serializer.data)
-            return Response(
-                serializer.data, status=status.HTTP_201_CREATED, headers=headers
-            )
-        else:
-            return Response(
+        if admin not in home_obj.user.all():
+             return Response(
                 {"message": "錯誤請求，使用者不在這個家庭裡"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-    def update(self, request, *args, **kwargs):
-        object_id = kwargs.get("pk")
-        query = home_admin.objects.filter(home_id=object_id).get()
-        home = home_admin.objects.filter(home=request.data.get("home")).get()
-        if query != home:
-            return Response(
-                {"message": "錯誤請求，無法修改其他家庭管理員"}, status=status.HTTP_400_BAD_REQUEST
-            )
-        print(query, home)
-        print(query == home)
-        print(request.data.get("home"))
-        # print(request.data.get('home')==home.home)
-        # if request.data.get('home')
-
-        print(home_admin)
         return super().update(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -176,5 +154,3 @@ class mode_key_dataViewSet(viewsets.ModelViewSet):
 
     queryset = mode_key_data.objects.all()
     serializer_class = mode_key_dataSerializer
-
-   

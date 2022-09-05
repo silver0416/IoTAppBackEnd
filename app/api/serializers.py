@@ -11,6 +11,7 @@ class userSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class homeAdminSerializer(serializers.ModelSerializer):
+    home=serializers.PrimaryKeyRelatedField(pk_field=HashidSerializerCharField(source_field='api.home_list.home_id'),read_only=True)
  
     class Meta:
         model = home_admin
@@ -44,6 +45,7 @@ class device_dataSerializer(serializers.ModelSerializer):
         fields = ('device_id', 'device_type', 'data_value', 'data_time')
 
 class mode_key_dataSerializer(serializers.ModelSerializer):
+    home_id=serializers.PrimaryKeyRelatedField(pk_field=HashidSerializerCharField(source_field='api.home_list.home_id'),queryset=home_list.objects.all())
     
     class Meta:
         model = mode_key_data
