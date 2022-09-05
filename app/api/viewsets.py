@@ -161,3 +161,8 @@ class mode_key_dataViewSet(viewsets.ModelViewSet):
         home_id_list=home.values_list('home_id',flat=True)
         queryset = queryset.filter(home_id__in = home_id_list)
         return queryset
+
+class chat_room_dataViewSet(viewsets.ModelViewSet):
+
+    queryset = chat_room_data.objects.all()
+    serializer_class = chat_room_data_Serializer

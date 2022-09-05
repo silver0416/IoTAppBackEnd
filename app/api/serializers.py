@@ -50,3 +50,7 @@ class mode_key_dataSerializer(serializers.ModelSerializer):
     class Meta:
         model = mode_key_data
         fields = ('mode_key_data_id','mode_key_name', 'home_id', 'tplink_switch_mode_key','ac_temperature','ac_switch','fan_level','fan_switch','mode_key_time')
+class chat_room_data_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = chat_room_data
+        fields = "__all__"

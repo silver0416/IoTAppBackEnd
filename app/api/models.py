@@ -1,4 +1,6 @@
+from email import message
 from math import fabs
+from pyexpat import model
 from random import choices
 from unicodedata import category
 import uuid
@@ -7,7 +9,6 @@ from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
-    PermissionsMixin,
 )
 from hashid_field import HashidAutoField
 
@@ -75,10 +76,6 @@ class User(AbstractBaseUser):
 
 
 class home_list(models.Model):
-    # home_id = models.AutoField(
-    #     blank=False, null=False, primary_key=True, auto_created=True
-    # )
-    # home_id = models.CharField(primary_key=True,unique=True,blank=False, editable=False,max_length=8)
     home_id = HashidAutoField(primary_key=True,min_length=8)
     home_name = models.CharField(max_length=30, blank=False, null=False)
     user = models.ManyToManyField(User,related_name="detail", blank=False)
@@ -143,3 +140,8 @@ class mode_key_data(models.Model):
     fan_level = models.SmallIntegerField(blank=False, null=False, default=1)
     fan_switch = models.BooleanField(blank=False, null=False, default=False)
     mode_key_time = models.DateTimeField(auto_now_add=True)
+
+class chat_room_data(models.Model):
+    message_id = models.AutoField(blank=False, null=False, primary_key=True, auto_created=True)
+    chat_room_name = models.CharField(max_length=30, blank=False, null=False)
+    message = models.TextField(blank=False, null=False)
