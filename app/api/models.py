@@ -99,25 +99,12 @@ class home_admin(models.Model):
         verbose_name = "家庭管理員"
         verbose_name_plural = "家庭管理員"
 
-
-# class user_belong_home(models.Model):
-#     user_belong_home_id = models.AutoField(
-#         blank=False, null=False, primary_key=True, auto_created=True
-#     )
-#     user = models.ForeignKey(User, related_name="belong_home", on_delete=models.CASCADE)
-#     home = models.ForeignKey(
-#         "home_list", related_name="belong_user", on_delete=models.CASCADE
-#     )
-#     home_owner = models.OneToOneField(User, on_delete=models.CASCADE)
-
-
 class device_type(models.Model):
     device_type_id = models.AutoField(
         blank=False, null=False, primary_key=True, auto_created=True
     )
     device_type_name = models.CharField(max_length=30, blank=False, null=False)
     device_type_description = models.CharField(max_length=30, blank=True, null=False)
-    category = models.ForeignKey("category_detail", on_delete=models.CASCADE)
 
 
 class device_list(models.Model):
@@ -127,24 +114,15 @@ class device_list(models.Model):
     added_time = models.DateTimeField(auto_now=True)
     home_id = models.ForeignKey(home_list, on_delete=models.CASCADE)
     device_type_id = models.ForeignKey(device_type, on_delete=models.CASCADE)
-
-
-class category_detail(models.Model):
-    category_id = models.AutoField(
-        blank=False, null=False, primary_key=True, auto_created=True
-    )
-    category_name = models.CharField(max_length=30, blank=False, null=False)
-    category_description = models.CharField(max_length=30, blank=True, null=False)
-
-
 class device_data(models.Model):
     device_data_id = models.AutoField(
         blank=False, null=False, primary_key=True, auto_created=True
     )
-    device_id = models.ForeignKey(device_list, on_delete=models.CASCADE)
+    device = models.ForeignKey(device_list, on_delete=models.CASCADE)
     device_type = models.ForeignKey(device_type, on_delete=models.CASCADE)
-    data_value = models.CharField(max_length=30, blank=False, null=False)
+    data_status = models.CharField(max_length=30, blank=False, null=False)
     data_time = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User,blank=False, on_delete=models.CASCADE)
 
 
 class mode_key_data(models.Model):

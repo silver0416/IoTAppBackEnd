@@ -35,13 +35,6 @@ class device_typeSerializer(serializers.ModelSerializer):
         model = device_type
         fields = ('device_type_name', 'device_type_description', 'category')
 
-class categorySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = category_detail
-        fields = ('category_name', 'category_description')
-
-
 class device_dataSerializer(serializers.ModelSerializer):
 
     class Meta:

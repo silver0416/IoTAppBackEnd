@@ -20,8 +20,8 @@ def request_user_activation(request, uid, token):
     """ 
     Intermediate view to activate a user's email. 
     """
-    protocol = 'https://'
-    # protocol = 'http://'
+    # protocol = 'https://'
+    protocol = 'http://'
     web_url = protocol + request.get_host()
     post_url = web_url + "/auth/users/activation/"
     post_data = {"uid": uid, "token": token}
@@ -49,8 +49,8 @@ def reset_user_password(request, **kwargs):
         }
 
         djoser_password_reset_url = '/auth/users/reset_password_confirm/'
-        protocol = 'https'
-        # protocol = 'http'
+        # protocol = 'https'
+        protocol = 'http'
         url = '{0}://{1}/{2}'.format(protocol, current_site,
                                      djoser_password_reset_url)
         response = requests.post(url,data=payload)

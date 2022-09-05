@@ -88,13 +88,20 @@ class homeViewSet(viewsets.ModelViewSet):
         return queryset
 
     def create(self, request, *args, **kwargs):
-        request_user = list(
-            map(
-                lambda x: User.objects.filter(username=x).get(),
-                request.data.get("user"),
-                #  request.data.get("user"),
+        try:
+            request_user = list(
+                map(
+                    lambda x: User.objects.filter(username=x).get(),
+                    request.data.get("user"),
+                )
             )
-        )
+        except:
+            request_user = list(
+                map(
+                    lambda x: User.objects.filter(username=x).get(),
+                    request.data.getlist("user"),
+                )
+            )
         if (len(request_user)) > 1 or request.user not in request_user:
             return Response(
                 {"message": "尚未建立家庭，無法加人"}, status=status.HTTP_400_BAD_REQUEST
@@ -116,16 +123,20 @@ class homeViewSet(viewsets.ModelViewSet):
         object_id = kwargs.get("pk")
         admin = home_admin.objects.filter(home_id=object_id).get()
         home = home_list.objects.filter(home_id=object_id).get()
-
-        request_user = list(
-            map(
-                lambda x: User.objects.filter(username=x).get(),
-                request.data.get("user"),
-                # request.data.get("user"),
+        try:
+            request_user = list(
+                map(
+                    lambda x: User.objects.filter(username=x).get(),
+                    request.data.get("user"),
+                )
             )
-        )
-
-        print(request_user)
+        except:
+            request_user = list(
+                map(
+                    lambda x: User.objects.filter(username=x).get(),
+                    request.data.getlist("user"),
+                )
+            )
         if admin.admin not in request_user:
             return Response(
                 {"message": "錯誤請求，管理員不能退出家庭"}, status=status.HTTP_400_BAD_REQUEST
@@ -155,12 +166,6 @@ class device_typeViewSet(viewsets.ModelViewSet):
     serializer_class = device_typeSerializer
 
 
-class categoryViewSet(viewsets.ModelViewSet):
-
-    queryset = category_detail.objects.all()
-    serializer_class = categorySerializer
-
-
 class device_dataViewSet(viewsets.ModelViewSet):
 
     queryset = device_data.objects.all()
@@ -172,9 +177,4 @@ class mode_key_dataViewSet(viewsets.ModelViewSet):
     queryset = mode_key_data.objects.all()
     serializer_class = mode_key_dataSerializer
 
-    def get_queryset(self):
-
-        queryset = super().get_queryset()
-        home = home_list.objects.filter(user=self.request.user).get()
-        print(home)
-        return queryset
+   

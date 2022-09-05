@@ -5,8 +5,8 @@
 #include <ArduinoJson.h>
 #include <DHT.h>
 
-const char *ssid = "ssid";
-const char *password = "password";
+const char *ssid = "I Refuse";
+const char *password = "Dagakotowaru";
 
 WebSocketsClient websocket;
 
@@ -14,7 +14,7 @@ WiFiClient client;
 
 char path[] = "/ws/chat/temp/";
 
-char host[] = "192.168.100.2";
+char host[] = "192.168.1.14";
 
 const uint16_t port = 8000;
 
