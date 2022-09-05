@@ -1,6 +1,7 @@
 from urllib import request
 from rest_framework import serializers
 from api.models import *
+from hashid_field.rest import HashidSerializerCharField
 
 
 class userSerializer(serializers.ModelSerializer):
@@ -17,6 +18,7 @@ class homeAdminSerializer(serializers.ModelSerializer):
 
 
 class homeSerializer(serializers.ModelSerializer):
+    home_id = HashidSerializerCharField(source_field='api.home_list.home_id', read_only=True)
     class Meta:
         model = home_list
         fields = "__all__"

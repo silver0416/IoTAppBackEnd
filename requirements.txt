@@ -13,3 +13,4 @@ channels==3.0.5
 # tuya-connector-python == 0.1.2
 channels_redis==4.0.0b1
 django-guardian == 2.4.0
+django-hashid-field == 3.3.5

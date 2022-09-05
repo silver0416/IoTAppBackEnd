@@ -1,6 +1,7 @@
 from math import fabs
 from random import choices
 from unicodedata import category
+import uuid
 from xml.dom.minidom import Identified
 from django.db import models
 from django.contrib.auth.models import (
@@ -8,6 +9,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from hashid_field import HashidAutoField
 
 # Create your models here.
 
@@ -73,9 +75,11 @@ class User(AbstractBaseUser):
 
 
 class home_list(models.Model):
-    home_id = models.AutoField(
-        blank=False, null=False, primary_key=True, auto_created=True
-    )
+    # home_id = models.AutoField(
+    #     blank=False, null=False, primary_key=True, auto_created=True
+    # )
+    # home_id = models.CharField(primary_key=True,unique=True,blank=False, editable=False,max_length=8)
+    home_id = HashidAutoField(primary_key=True,min_length=8)
     home_name = models.CharField(max_length=30, blank=False, null=False)
     user = models.ManyToManyField(User,related_name="detail", blank=False)
 
@@ -115,6 +119,7 @@ class device_list(models.Model):
     home_id = models.ForeignKey(home_list, on_delete=models.CASCADE)
     device_type_id = models.ForeignKey(device_type, on_delete=models.CASCADE)
 class device_data(models.Model):
+    home=models.ForeignKey(home_list,blank=False,on_delete=models.CASCADE)
     device_data_id = models.AutoField(
         blank=False, null=False, primary_key=True, auto_created=True
     )

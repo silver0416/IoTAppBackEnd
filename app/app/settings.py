@@ -29,6 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = secret['django']['secret_key']
+HASHID_FIELD_SALT = secret['django']['hash_salt']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -74,7 +75,6 @@ EMAIL_HOST_PASSWORD = secret['smtp']['password']
 EMAIL_PORT = secret['smtp']['port']
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret['smtp']['from']
-
 DOMAIN = '192.168.1.14:8000'
 # DOMAIN = 'api.bap5.cc'
 
@@ -157,10 +157,8 @@ CHANNEL_LAYERS = {
 #     srvInfo['port'] = srv.port
 # port = srvInfo['port']
 
-domain ="127.0.0.1"
-port = 3306
 
-domain ="192.168.0.13"
+domain ="127.0.0.1"
 port = 3306
 
 DATABASES = {
