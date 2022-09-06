@@ -166,3 +166,9 @@ class chat_room_dataViewSet(viewsets.ModelViewSet):
 
     queryset = chat_room_data.objects.all()
     serializer_class = chat_room_data_Serializer
+
+
+class chat_roomViewSet(viewsets.ModelViewSet):
+
+    queryset = chat_room.objects.all()
+    serializer_class = chat_room_serializer

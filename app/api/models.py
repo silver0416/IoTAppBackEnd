@@ -145,3 +145,7 @@ class chat_room_data(models.Model):
     message_id = models.AutoField(blank=False, null=False, primary_key=True, auto_created=True)
     chat_room_name = models.CharField(max_length=30, blank=False, null=False)
     message = models.TextField(blank=False, null=False)
+
+class chat_room(models.Model):
+    chat_room_name = models.CharField(max_length=30, blank=False, null=False, primary_key=True)
+    message = models.ManyToManyField(chat_room_data,related_name="chat_room_message", blank=False)

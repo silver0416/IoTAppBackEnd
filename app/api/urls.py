@@ -14,6 +14,8 @@ router.register("device_type", device_typeViewSet)
 router.register("device_data", device_dataViewSet)
 router.register("users", UserViewSet)
 router.register("mode_key_data", mode_key_dataViewSet)
+router.register("chat_room_data", chat_room_dataViewSet)
+router.register("chat_room", chat_roomViewSet)
 app_name = "api"    
 
 urlpatterns = [

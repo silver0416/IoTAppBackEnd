@@ -54,3 +54,8 @@ class chat_room_data_Serializer(serializers.ModelSerializer):
     class Meta:
         model = chat_room_data
         fields = "__all__"
+
+class chat_room_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = chat_room
+        fields = "__all__"
