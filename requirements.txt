@@ -14,3 +14,4 @@ channels==3.0.5
 channels_redis==4.0.0b1
 django-guardian == 2.4.0
 django-hashid-field == 3.3.5
+greenlet == 2.0.0a2
