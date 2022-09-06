@@ -18,7 +18,8 @@ RUN python -m venv /py && \
     adduser --disabled-password --no-create-home app && \
     apk add tk && \
     apk add --no-cache bash && \
-    apk add vim
+    apk add vim && \
+    apk add curl
 
 ENV PATH = "/py/bin:$PATH"
 
