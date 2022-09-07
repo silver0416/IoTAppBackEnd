@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.views import APIView
 
 # Create your views here.
 from .models import *
@@ -10,6 +11,8 @@ from .permissions import *
 from rest_framework import permissions
 from rest_framework.views import APIView
 from django.http import Http404
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import AllowAny, IsAdminUser
 
 
 class homeAdminViewSet(viewsets.ModelViewSet):
@@ -27,7 +30,7 @@ class homeAdminViewSet(viewsets.ModelViewSet):
         home_obj = home_list.objects.filter(home_id=self.get_object().home_id).get()
         admin = User.objects.get(username=request.data.get("admin"))
         if admin not in home_obj.user.all():
-             return Response(
+            return Response(
                 {"message": "錯誤請求，使用者不在這個家庭裡"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -132,22 +135,34 @@ class homeViewSet(viewsets.ModelViewSet):
         return super().update(request, *args, **kwargs)
 
 
-class added_device_listViewSet(viewsets.ModelViewSet):
+class add_deviceViewSet(viewsets.ModelViewSet):
 
     queryset = device_list.objects.all()
     serializer_class = device_listSerializer
-
-
-class device_typeViewSet(viewsets.ModelViewSet):
-
-    queryset = device_type.objects.all()
-    serializer_class = device_typeSerializer
 
 
 class device_dataViewSet(viewsets.ModelViewSet):
 
     queryset = device_data.objects.all()
     serializer_class = device_dataSerializer
+    permission_classes_by_action = {
+        "create": [AllowAny],
+    }
+
+    def create(self, request, *args, **kwargs):
+        return super(device_dataViewSet, self).create(request, *args, **kwargs)
+
+
+    def get_permissions(self):
+        try:
+            # return permission_classes depending on `action`
+            return [
+                permission()
+                for permission in self.permission_classes_by_action[self.action]
+            ]
+        except KeyError:
+            # action is not set return default permission_classes
+            return [permission() for permission in self.permission_classes]
 
 
 class mode_key_dataViewSet(viewsets.ModelViewSet):
@@ -157,10 +172,11 @@ class mode_key_dataViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        home=home_list.objects.filter(user=self.request.user)
-        home_id_list=home.values_list('home_id',flat=True)
-        queryset = queryset.filter(home_id__in = home_id_list)
+        home = home_list.objects.filter(user=self.request.user)
+        home_id_list = home.values_list("home_id", flat=True)
+        queryset = queryset.filter(home_id__in=home_id_list)
         return queryset
+
 
 class chat_room_dataViewSet(viewsets.ModelViewSet):
 

@@ -7,6 +7,10 @@
 */
 #include "WiFi.h"
 #include "EEPROM.h"
+#include "HTTPClient.h"
+#include "ArduinoJson.h"
+#include "DHT.h"
+#include "Arduino.h"
 #define LENGTH(x) (strlen(x) + 1) // length of char string
 #define EEPROM_SIZE 200           // EEPROM size
 #define WiFi_rst 0                // WiFi credential reset pin (Boot button on ESP32)
@@ -14,6 +18,19 @@ String ssid;                      // string variable to store ssid
 String pss;                       // string variable to store password
 char *aes = "McQfTjWnZr4u7x!A";   // AES key
 unsigned long rst_millis;
+
+const String TYPE="DHT11";        // Device type
+#define DHTPIN 4                  // DHT11 data pin
+#define DHTTYPE DHT11             // DHT11 sensor type
+DHT dht(DHTPIN, DHTTYPE);         // DHT11 sensor object
+
+// 宣告讀取溫溼度的變數
+StaticJsonDocument<100> doc;
+String jsonString;
+float temperature;
+float humidity;
+int interval = 60000;
+unsigned long previousMillis = 0;
 
 void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info)
 {
@@ -82,8 +99,8 @@ void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info)
 
 void setup()
 {
-  Serial.begin(115200); // Init serial
-  pinMode(LED_BUILTIN, OUTPUT); // Init LED
+  Serial.begin(115200);           // Init serial
+  pinMode(LED_BUILTIN, OUTPUT);   // Init LED
   digitalWrite(LED_BUILTIN, LOW); // Turn off LED
   pinMode(WiFi_rst, INPUT);
   if (!EEPROM.begin(EEPROM_SIZE))
@@ -119,7 +136,7 @@ void setup()
       delay(500);
       Serial.print(".");
     }
-    
+
     Serial.println("");
     Serial.println("SmartConfig received.");
 

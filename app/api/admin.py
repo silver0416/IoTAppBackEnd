@@ -8,7 +8,6 @@ admin.site.site_title = "Your Admin Portal"
 admin.site.index_title = "後臺服務"
 admin.site.register(User)
 # admin.site.register(home_list)
-admin.site.register(device_type)
 admin.site.register(device_data)
 admin.site.register(device_list)
 # admin.site.register(home_admin)

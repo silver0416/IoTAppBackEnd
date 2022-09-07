@@ -42,9 +42,11 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     # user_uid = models.AutoField(
-        # blank=False, null=False, primary_key=True, auto_created=True
+    # blank=False, null=False, primary_key=True, auto_created=True
     # )
-    username = models.CharField(max_length=30,primary_key=True, blank=False, null=False, unique=True)
+    username = models.CharField(
+        max_length=30, primary_key=True, blank=False, null=False, unique=True
+    )
     password = models.TextField(blank=False, null=False, default=" ")
     user_nickname = models.CharField(max_length=30, blank=True, null=True)
     user_phone = models.CharField(max_length=30, blank=True, null=True)
@@ -76,9 +78,9 @@ class User(AbstractBaseUser):
 
 
 class home_list(models.Model):
-    home_id = HashidAutoField(primary_key=True,min_length=8)
+    home_id = HashidAutoField(primary_key=True, min_length=8)
     home_name = models.CharField(max_length=30, blank=False, null=False)
-    user = models.ManyToManyField(User,related_name="detail", blank=False)
+    user = models.ManyToManyField(User, related_name="detail", blank=False)
 
     def __str__(self):
         return self.home_name
@@ -100,38 +102,33 @@ class home_admin(models.Model):
         verbose_name = "家庭管理員"
         verbose_name_plural = "家庭管理員"
 
-class device_type(models.Model):
-    device_type_id = models.AutoField(
-        blank=False, null=False, primary_key=True, auto_created=True
-    )
-    device_type_name = models.CharField(max_length=30, blank=False, null=False)
-    device_type_description = models.CharField(max_length=30, blank=True, null=False)
-
-
 class device_list(models.Model):
-    device = models.AutoField(
-        blank=False, null=False, primary_key=True, auto_created=True
-    )
+    id = models.UUIDField(
+       default=uuid.uuid4, primary_key=True)
+    name = models.CharField(max_length=30, blank=False, null=False)
     added_time = models.DateTimeField(auto_now=True)
-    home_id = models.ForeignKey(home_list, on_delete=models.CASCADE)
-    device_type_id = models.ForeignKey(device_type, on_delete=models.CASCADE)
+    type_name = models.CharField(max_length=30, blank=False, null=False)
+    home = models.ForeignKey(home_list, on_delete=models.CASCADE)
+
+
 class device_data(models.Model):
-    home=models.ForeignKey(home_list,blank=False,on_delete=models.CASCADE)
-    device_data_id = models.AutoField(
+    home = models.ForeignKey(home_list, blank=False, on_delete=models.CASCADE)
+    id = models.AutoField(
         blank=False, null=False, primary_key=True, auto_created=True
     )
     device = models.ForeignKey(device_list, on_delete=models.CASCADE)
-    device_type = models.ForeignKey(device_type, on_delete=models.CASCADE)
-    data_status = models.CharField(max_length=30, blank=False, null=False)
+    data_status = models.JSONField(null=False)
     data_time = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User,blank=False, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, blank=False, on_delete=models.CASCADE)
 
 
 class mode_key_data(models.Model):
     mode_key_data_id = models.AutoField(
         blank=False, null=False, primary_key=True, auto_created=True
     )
-    mode_key_name = models.CharField(max_length=30, blank=False, null=False,default=False)
+    mode_key_name = models.CharField(
+        max_length=30, blank=False, null=False, default=False
+    )
     home_id = models.ForeignKey(home_list, on_delete=models.CASCADE)
     tplink_switch_mode_key = models.CharField(max_length=6, blank=False, null=False)
     ac_temperature = models.SmallIntegerField(blank=False, null=False, default=25)
@@ -141,11 +138,19 @@ class mode_key_data(models.Model):
     fan_switch = models.BooleanField(blank=False, null=False, default=False)
     mode_key_time = models.DateTimeField(auto_now_add=True)
 
+
 class chat_room_data(models.Model):
-    message_id = models.AutoField(blank=False, null=False, primary_key=True, auto_created=True)
+    message_id = models.AutoField(
+        blank=False, null=False, primary_key=True, auto_created=True
+    )
     chat_room_name = models.CharField(max_length=30, blank=False, null=False)
     message = models.TextField(blank=False, null=False)
 
+
 class chat_room(models.Model):
-    chat_room_name = models.CharField(max_length=30, blank=False, null=False, primary_key=True)
-    message = models.ManyToManyField(chat_room_data,related_name="chat_room_message", blank=False)
+    chat_room_name = models.CharField(
+        max_length=30, blank=False, null=False, primary_key=True
+    )
+    message = models.ManyToManyField(
+        chat_room_data, related_name="chat_room_message", blank=False
+    )
