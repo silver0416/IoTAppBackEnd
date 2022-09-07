@@ -9,16 +9,17 @@ from channels.db import database_sync_to_async
 
 class StripConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        if self.scope["user"].is_anonymous:
-            await self.close()
-        else:
-            self.power_strip = SmartPowerStrip("60.198.44.134")
-            # self.home_name = self.scope["url_route"]["kwargs"]["home_name"]
-            # self.home_group_name = "chat_%s" % self.home_name
+        # if self.scope["user"].is_anonymous:
+        #     await self.close()
+        # else:
+        # self.power_strip = SmartPowerStrip("60.198.44.134")
+        self.power_strip = SmartPowerStrip("192.168.0.11")
+        # self.home_name = self.scope["url_route"]["kwargs"]["home_name"]
+        # self.home_group_name = "chat_%s" % self.home_name
 
-            # # # # # Join room group
-            # await self.channel_layer.group_add(self.home_group_name, self.channel_name)
-            await self.accept()
+        # # # # # Join room group
+        # await self.channel_layer.group_add(self.home_group_name, self.channel_name)
+        await self.accept()
 
     # async def disconnect(self, close_code):
     #     # Leave room group
