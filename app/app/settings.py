@@ -75,7 +75,7 @@ EMAIL_HOST_PASSWORD = secret['smtp']['password']
 EMAIL_PORT = secret['smtp']['port']
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret['smtp']['from']
-DOMAIN = '192.168.1.14:8000'
+DOMAIN = '192.168.0.13:8000'
 # DOMAIN = 'api.bap5.cc'
 
 
@@ -158,7 +158,7 @@ CHANNEL_LAYERS = {
 # port = srvInfo['port']
 
 
-domain ="127.0.0.1"
+domain ="192.168.0.13"
 port = 3306
 
 DATABASES = {

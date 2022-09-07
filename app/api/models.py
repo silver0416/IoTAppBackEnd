@@ -136,6 +136,7 @@ class mode_key_data(models.Model):
     ac_switch = models.BooleanField(blank=False, null=False, default=False)
     fan_level = models.SmallIntegerField(blank=False, null=False, default=1)
     fan_switch = models.BooleanField(blank=False, null=False, default=False)
+    fan_spin = models.BooleanField(blank=False, null=False, default=False)
     mode_key_time = models.DateTimeField(auto_now_add=True)
 
 
