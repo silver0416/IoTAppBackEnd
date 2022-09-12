@@ -109,23 +109,6 @@ void setup() {
     customData = readStringFromFlash(60); // Read custom data stored at address 60
     DEBUG_SERIAL.printf("Custom data = %s\n", customData);
   }
-  MQ7.setRegressionMethod(1); //_PPM =  a*ratio^b
-  MQ7.setA(99.042); MQ7.setB(-1.518); // Configurate the ecuation values to get CO concentration
-  MQ7.init(); 
-
-  Serial.print("Calibrating please wait.");
-  float calcR0 = 0;
-  for(int i = 1; i<=10; i ++)
-  {
-    MQ7.update(); // Update data, the arduino will be read the voltage on the analog pin
-    calcR0 += MQ7.calibrate(27.5);
-    Serial.print(".");
-  }
-  MQ7.setR0(calcR0/10);
-  Serial.println("  done!.");
-  if(isinf(calcR0)) {Serial.println("Warning: Conection issue founded, R0 is infite (Open circuit detected) please check your wiring and supply"); while(1);}
-  if(calcR0 == 0){Serial.println("Warning: Conection issue founded, R0 is zero (Analog pin with short circuit to ground) please check your wiring and supply"); while(1);}
-  // MQ7.serialDebug(true);
 
   WiFi.begin(ssid.c_str(), pss.c_str());
 
@@ -135,7 +118,7 @@ void setup() {
   {
     // Init WiFi as Station, start SmartConfig
     WiFi.mode(WIFI_AP_STA);
-    // WiFi.onEvent(WiFiEvent);
+    WiFi.onEvent(WiFiEvent);
     WiFi.beginSmartConfig(SC_TYPE_ESPTOUCH_V2, aes);
 
     // Wait for SmartConfig packet from mobile
@@ -180,6 +163,23 @@ void setup() {
     digitalWrite(LED_BUILTIN, HIGH); // Turn on LED
   }
   
+  MQ7.setRegressionMethod(1); //_PPM =  a*ratio^b
+  MQ7.setA(99.042); MQ7.setB(-1.518); // Configurate the ecuation values to get CO concentration
+  MQ7.init(); 
+
+  Serial.print("Calibrating please wait.");
+  float calcR0 = 0;
+  for(int i = 1; i<=10; i ++)
+  {
+    MQ7.update(); // Update data, the arduino will be read the voltage on the analog pin
+    calcR0 += MQ7.calibrate(27.5);
+    Serial.print(".");
+  }
+  MQ7.setR0(calcR0/10);
+  Serial.println("  done!.");
+  if(isinf(calcR0)) {Serial.println("Warning: Conection issue founded, R0 is infite (Open circuit detected) please check your wiring and supply"); while(1);}
+  if(calcR0 == 0){Serial.println("Warning: Conection issue founded, R0 is zero (Analog pin with short circuit to ground) please check your wiring and supply"); while(1);}
+  MQ7.serialDebug(true);
   http.addHeader("Content-Type", "application/json");
   http.begin(request);
   
