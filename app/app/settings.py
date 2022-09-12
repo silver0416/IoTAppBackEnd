@@ -75,7 +75,7 @@ EMAIL_HOST_PASSWORD = secret['smtp']['password']
 EMAIL_PORT = secret['smtp']['port']
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret['smtp']['from']
-DOMAIN = '192.168.0.13:8000'
+DOMAIN = '192.168.1.14:8000'
 # DOMAIN = 'api.bap5.cc'
 
 
@@ -158,9 +158,8 @@ CHANNEL_LAYERS = {
 # port = srvInfo['port']
 
 
-domain ="192.168.0.13"
+domain ="127.0.0.1"
 port = 3306
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -206,7 +205,7 @@ TIME_ZONE = 'Asia/Taipei'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/

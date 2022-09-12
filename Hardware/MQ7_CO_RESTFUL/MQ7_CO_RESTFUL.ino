@@ -1,10 +1,3 @@
-
-/*
-  Date: 11-08-21
-  Code is written by: Dharmik
-  Configure ESP32 Wi-Fi parameters using SmartConfig
-  Find more on www.TechTOnions.com
-*/
 #include "WiFi.h"
 #include "EEPROM.h"
 #include "HTTPClient.h"
@@ -16,7 +9,7 @@
 String ssid;                      // string variable to store ssid
 String pss;                       // string variable to store password
 String customData;
-char *aes = "McQfTjWnZr4u7x!A";   // AES key
+char *aes = "McQfTjWnZr4u7x!A"; // AES key
 unsigned long rst_millis;
 #define DEBUG_SERIAL Serial
 HTTPClient http;
@@ -26,16 +19,12 @@ String jsonString;
 String jsonString1;
 int interval = 60000;
 unsigned long previousMillis = 0;
-String request = "http://192.168.100.2:8000/auth/device_data/";
+String request = "http://192.168.1.14:8000/auth/device_data/";
 
-#include "DHT.h"
-const String TYPE = "DHT11"; // Device type
-#define DHTPIN 4             // DHT11 data pin
-#define DHTTYPE DHT11        // DHT11 sensor type
-DHT dht(DHTPIN, DHTTYPE);    // DHT11 sensor object
-// 宣告讀取溫溼度的變數
-float temperature;
-float humidity;
+#include <MQUnifiedsensor.h>
+MQUnifiedsensor MQ7("ESP-32", 3.3, 12, 32, "MQ-7");
+float COppm;
+
 
 void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info)
 {
@@ -62,37 +51,33 @@ void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info)
     if (info.sc_got_ssid_pswd.type == SC_TYPE_ESPTOUCH_V2)
     {
       ESP_ERROR_CHECK(esp_smartconfig_get_rvd_data(rvd_data, sizeof(rvd_data)));
-      
+
       customData = (char *)rvd_data;
-      
+
       DEBUG_SERIAL.printf("RVD_DATA:%s\n", customData.c_str());
       // DEBUG_SERIAL.println("RVD_DATA");
       // DEBUG_SERIAL.write(rvd_data, 33);
       // DEBUG_SERIAL.printf("\n");
-
     }
   }
   break;
   }
 }
 
-void sendData()
-{
-  
+void sendData(){
   JsonObject root = doc.to<JsonObject>();
   JsonObject root1 = doc2.to<JsonObject>();
   if (digitalRead(LED_BUILTIN) == HIGH)
   {
-    temperature = dht.readTemperature();
-    humidity = dht.readHumidity();
+    MQ7.update();                   // Update data, the arduino will be read the voltage on the analog pin
+    COppm = MQ7.readSensor(); // Sensor will read PPM concentration using the model and a and b values setted before or in the setup
   }
-  doc2["temperature"] = int(temperature);
-  doc2["humidity"] = humidity;
+  doc2["COppm"] = COppm;
   serializeJson(doc2, jsonString1);
   doc["data_status"] = jsonString1;
-  doc["home"] = customData.substring(0,8);
-  doc["device"] = customData.substring(8,44);
-  doc["user"] = customData.substring(44,customData.length());
+  doc["home"] = customData.substring(0, 8);
+  doc["device"] = customData.substring(8, 44);
+  doc["user"] = customData.substring(44, customData.length());
   serializeJson(doc, jsonString);
   http.addHeader("Content-Type", "application/json");
   http.POST(jsonString);
@@ -102,9 +87,8 @@ void sendData()
   jsonString1 = "";
 }
 
-void setup()
-{
-  
+void setup() {
+
   DEBUG_SERIAL.begin(115200);
   DEBUG_SERIAL.setDebugOutput(true);
   delay(1000);                    // Init serial
@@ -119,12 +103,29 @@ void setup()
   else
   {
     ssid = readStringFromFlash(0); // Read SSID stored at address 0
-    DEBUG_SERIAL.printf("SSID = %s\n",ssid);
+    DEBUG_SERIAL.printf("SSID = %s\n", ssid);
     pss = readStringFromFlash(40); // Read Password stored at address 40
-    DEBUG_SERIAL.printf("psss = %s\n",pss);
+    DEBUG_SERIAL.printf("psss = %s\n", pss);
     customData = readStringFromFlash(60); // Read custom data stored at address 60
     DEBUG_SERIAL.printf("Custom data = %s\n", customData);
   }
+  MQ7.setRegressionMethod(1); //_PPM =  a*ratio^b
+  MQ7.setA(99.042); MQ7.setB(-1.518); // Configurate the ecuation values to get CO concentration
+  MQ7.init(); 
+
+  Serial.print("Calibrating please wait.");
+  float calcR0 = 0;
+  for(int i = 1; i<=10; i ++)
+  {
+    MQ7.update(); // Update data, the arduino will be read the voltage on the analog pin
+    calcR0 += MQ7.calibrate(27.5);
+    Serial.print(".");
+  }
+  MQ7.setR0(calcR0/10);
+  Serial.println("  done!.");
+  if(isinf(calcR0)) {Serial.println("Warning: Conection issue founded, R0 is infite (Open circuit detected) please check your wiring and supply"); while(1);}
+  if(calcR0 == 0){Serial.println("Warning: Conection issue founded, R0 is zero (Analog pin with short circuit to ground) please check your wiring and supply"); while(1);}
+  // MQ7.serialDebug(true);
 
   WiFi.begin(ssid.c_str(), pss.c_str());
 
@@ -134,7 +135,7 @@ void setup()
   {
     // Init WiFi as Station, start SmartConfig
     WiFi.mode(WIFI_AP_STA);
-    WiFi.onEvent(WiFiEvent);
+    // WiFi.onEvent(WiFiEvent);
     WiFi.beginSmartConfig(SC_TYPE_ESPTOUCH_V2, aes);
 
     // Wait for SmartConfig packet from mobile
@@ -169,22 +170,23 @@ void setup()
     DEBUG_SERIAL.print("PSS:");
     DEBUG_SERIAL.println(pss);
     DEBUG_SERIAL.println("Store SSID & PSS in Flash");
-    writeStringToFlash(ssid.c_str(), 0); // storing ssid at address 0
-    writeStringToFlash(pss.c_str(), 40); // storing pss at address 40
+    writeStringToFlash(ssid.c_str(), 0);        // storing ssid at address 0
+    writeStringToFlash(pss.c_str(), 40);        // storing pss at address 40
     writeStringToFlash(customData.c_str(), 60); // storing pss at address 40
   }
   else
   {
     DEBUG_SERIAL.println("WiFi Connected");
     digitalWrite(LED_BUILTIN, HIGH); // Turn on LED
-   
   }
-    http.addHeader("Content-Type", "application/json");
-    http.begin(request);
+  
+  http.addHeader("Content-Type", "application/json");
+  http.begin(request);
+  
 }
 
-void loop()
-{
+void loop() {
+
   // put your main code here, to run repeatedly:
   rst_millis = millis();
   while (digitalRead(WiFi_rst) == LOW)

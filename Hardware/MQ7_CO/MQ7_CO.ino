@@ -23,11 +23,11 @@
 
 
 #include <MQUnifiedsensor.h>
-MQUnifiedsensor MQ7("Arduino UNO", 5, 10, A0, "MQ-7");
+MQUnifiedsensor MQ7("ESP-32", 3.3, 12, 4, "MQ-7");
 
 void setup() {
   
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   MQ7.setRegressionMethod(1); //_PPM =  a*ratio^b
   MQ7.setA(99.042); MQ7.setB(-1.518); // Configurate the ecuation values to get CO concentration
@@ -56,6 +56,6 @@ void loop() {
   Serial.print("CO= ");
   Serial.print(COppm);
   Serial.println(" ppm");
-  delay(500); //Sampling frequency
+//  delay(500); //Sampling frequency
   
 }

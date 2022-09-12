@@ -11,6 +11,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
 )
 from hashid_field import HashidAutoField
+import  django.utils.timezone as timezone
 
 # Create your models here.
 
@@ -118,7 +119,7 @@ class device_data(models.Model):
     )
     device = models.ForeignKey(device_list, on_delete=models.CASCADE)
     data_status = models.JSONField(null=False)
-    data_time = models.DateTimeField(auto_now_add=True)
+    data_time = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(User, blank=False, on_delete=models.CASCADE)
 
 

@@ -1,5 +1,5 @@
 {
-    "sketch": "MQ7_CO_Sensor.ino",
+    "sketch": "MQ7_CO.ino",
     "configuration": "FlashFreq=40,UploadSpeed=115200,DebugLevel=none",
     "board": "esp32:esp32:nodemcu-32s",
     "port": "COM5",

@@ -2,6 +2,6 @@
     "sketch": "DHT11_RESTFUL.ino",
     "configuration": "FlashFreq=40,UploadSpeed=115200,DebugLevel=none",
     "board": "esp32:esp32:nodemcu-32s",
-    "port": "COM3",
+    "port": "COM5",
     "output": "./build"
 }
