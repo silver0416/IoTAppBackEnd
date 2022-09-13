@@ -1,5 +1,0 @@
-{
-    "sketch": "IRremote.ino",
-    "board": "arduino:avr:uno",
-    "port": "COM6"
-}
