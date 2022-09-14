@@ -1,10 +1,3 @@
-
-/*
-  Date: 11-08-21
-  Code is written by: Dharmik
-  Configure ESP32 Wi-Fi parameters using SmartConfig
-  Find more on www.TechTOnions.com
-*/
 #include "WiFi.h"
 #include "EEPROM.h"
 #include "HTTPClient.h"
@@ -26,7 +19,7 @@ String jsonString;
 String jsonString1;
 int interval = 60000;
 unsigned long previousMillis = 0;
-String request = "http://192.168.100.2:8000/auth/device_data/";
+String request = "http://192.168.1.14:8000/auth/device_data/";
 
 #include "DHT.h"
 const String TYPE = "DHT11"; // Device type
