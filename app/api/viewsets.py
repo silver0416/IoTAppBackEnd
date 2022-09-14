@@ -174,6 +174,13 @@ class device_dataViewSet(viewsets.ModelViewSet):
             # action is not set return default permission_classes
             return [permission() for permission in self.permission_classes]
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        home = home_list.objects.filter(user=self.request.user)
+        home_id_list = home.values_list("home_id", flat=True)
+        queryset = queryset.filter(home_id__in=home_id_list)
+        return queryset
+
 
 class mode_key_dataViewSet(viewsets.ModelViewSet):
 

@@ -46,6 +46,9 @@ class device_dataSerializer(serializers.ModelSerializer):
         pk_field=HashidSerializerCharField(source_field="api.home_list.home_id"),
         queryset=home_list.objects.all(),
     )
+    data_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+    name=serializers.CharField(source='device.name',read_only=True)
+    type=serializers.CharField(source='device.type_name',read_only=True)
     class Meta:
         model = device_data
         fields = "__all__"

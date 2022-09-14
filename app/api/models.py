@@ -12,7 +12,7 @@ from django.contrib.auth.models import (
 )
 from hashid_field import HashidAutoField
 import  django.utils.timezone as timezone
-
+from django.utils import timezone, dateformat
 # Create your models here.
 
 
@@ -107,7 +107,7 @@ class device_list(models.Model):
     id = models.UUIDField(
        default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=30, blank=False, null=False)
-    added_time = models.DateTimeField(auto_now=True)
+    added_time = models.DateTimeField(default=timezone.now)
     type_name = models.CharField(max_length=30, blank=False, null=False)
     home = models.ForeignKey(home_list, on_delete=models.CASCADE)
 

@@ -17,7 +17,7 @@ StaticJsonDocument<200> doc;
 StaticJsonDocument<200> doc2;
 String jsonString;
 String jsonString1;
-int interval = 60000;
+int interval = 30000;
 unsigned long previousMillis = 0;
 String request = "http://192.168.1.14:8000/auth/device_data/";
 

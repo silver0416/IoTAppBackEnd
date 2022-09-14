@@ -16,7 +16,8 @@ import pymysql
 import os
 import dns.resolver
 import yaml
-with open('secret.yml', 'r') as f:
+
+with open("secret.yml", "r") as f:
     secret = yaml.load(f, Loader=yaml.FullLoader)
 
 pymysql.install_as_MySQLdb()
@@ -28,114 +29,111 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = secret['django']['secret_key']
-HASHID_FIELD_SALT = secret['django']['hash_salt']
+SECRET_KEY = secret["django"]["secret_key"]
+HASHID_FIELD_SALT = secret["django"]["hash_salt"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'api',
-    'djoser',
-    'channels',
-    'guardian',
-
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "api",
+    "djoser",
+    "channels",
+    "guardian",
     # 'allauth',
     # 'allauth.account',
     # 'allauth.socialaccount',
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
 }
-AUTH_USER_MODEL = 'api.User'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = secret['smtp']['host']
-EMAIL_HOST_USER = secret['smtp']['username']
-EMAIL_HOST_PASSWORD = secret['smtp']['password']
-EMAIL_PORT = secret['smtp']['port']
+AUTH_USER_MODEL = "api.User"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = secret["smtp"]["host"]
+EMAIL_HOST_USER = secret["smtp"]["username"]
+EMAIL_HOST_PASSWORD = secret["smtp"]["password"]
+EMAIL_PORT = secret["smtp"]["port"]
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = secret['smtp']['from']
-DOMAIN = '192.168.1.14:8000'
+DEFAULT_FROM_EMAIL = secret["smtp"]["from"]
+DOMAIN = "192.168.1.14:8000"
 # DOMAIN = 'api.bap5.cc'
 
 
 DJOSER = {
-    'LOGIN_FIELD': 'email',
+    "LOGIN_FIELD": "email",
     "USER_CREATE_PASSWORD_RETYPE": True,
-    'SEND_ACTIVATION_EMAIL': True,
-    'ACTIVATION_URL': 'activation/{uid}/{token}',
-    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/{uid}/{token}',
-    'SEND_CONFIRMATION_EMAIL': True,
-    'SET_PASSWORD_RETYPE': True,
-    'PASSWORD_RESET_CONFIRM_RETYPE': True,
+    "SEND_ACTIVATION_EMAIL": True,
+    "ACTIVATION_URL": "activation/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/{uid}/{token}",
+    "SEND_CONFIRMATION_EMAIL": True,
+    "SET_PASSWORD_RETYPE": True,
+    "PASSWORD_RESET_CONFIRM_RETYPE": True,
     "SERIALIZERS": {
-        'user': 'api.serializers.userSerializer',
-        'current_user': 'api.serializers.userSerializer',
-    }
+        "user": "api.serializers.userSerializer",
+        "current_user": "api.serializers.userSerializer",
+    },
 }
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://api.bap5.cc']
+CSRF_TRUSTED_ORIGINS = ["https://api.bap5.cc"]
 
-ROOT_URLCONF = 'app.urls'
+ROOT_URLCONF = "app.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',  # default
-    'guardian.backends.ObjectPermissionBackend',
+    "django.contrib.auth.backends.ModelBackend",  # default
+    "guardian.backends.ObjectPermissionBackend",
 )
 # WSGI_APPLICATION = 'app.wsgi.application'
 
-ASGI_APPLICATION = 'app.asgi.application'
+ASGI_APPLICATION = "app.asgi.application"
 
 
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    },
+    "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
 }
 
 # CHANNEL_LAYERS = {
@@ -158,19 +156,19 @@ CHANNEL_LAYERS = {
 # port = srvInfo['port']
 
 
-domain ="127.0.0.1"
+domain = "127.0.0.1"
 port = 3306
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'IoTApp_server',
-        'USER': secret['account']['username'],
-        'PASSWORD': secret['account']['password'],
-        'HOST': domain,
-        'PORT': port,
-        'OPTIONS': {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "IoTApp_server",
+        "USER": secret["account"]["username"],
+        "PASSWORD": secret["account"]["password"],
+        "HOST": domain,
+        "PORT": port,
+        "OPTIONS": {
             "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-        }
+        },
     },
 }
 
@@ -179,40 +177,37 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME':
-        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'zh-Hant'
 
-TIME_ZONE = 'Asia/Taipei'
+LANGUAGE_CODE = "zh-Hant"
 
-USE_I18N = True
+TIME_ZONE = "Asia/Taipei"
+
+USE_I18N = False
 
 USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
