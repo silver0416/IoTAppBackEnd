@@ -5,20 +5,21 @@
 #include <ArduinoJson.h>
 #include <DHT.h>
 
-const char *ssid = "I Refuse";
-const char *password = "Dagakotowaru";
+const char *ssid = "ssid";
+const char *password = "password";
 
 WebSocketsClient websocket;
 
 WiFiClient client;
 
-char path[] = "/ws/chat/temp/";
+char path[] = "/ws/device/temp/";
 
 char host[] = "192.168.1.14";
 
 const uint16_t port = 8000;
 
 StaticJsonDocument<100> doc;
+StaticJsonDocument<100> doc2;
 
 #define DEBUG_SERIAL Serial
 
@@ -29,9 +30,10 @@ DHT dht(DHTPIN, DHTTYPE);
 
 // 宣告讀取溫溼度的變數
 String jsonString;
+String jsonString1;
 float temperature;
 float humidity;
-int interval = 60000;
+int interval = 5000;
 unsigned long previousMillis = 0;
 
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
@@ -73,16 +75,23 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 void sendData()
 {
     JsonObject root = doc.to<JsonObject>();
+    JsonObject root1 = doc2.to<JsonObject>();
     if (digitalRead(LED_BUILTIN) == HIGH)
     {
         temperature = dht.readTemperature();
         humidity = dht.readHumidity();
+        doc2["temperature"] = temperature;
+        doc2["humidity"] = humidity;
+        doc2["device_type"] = "DHT11";
+        serializeJson(doc2, jsonString1);
+        doc["message"] = jsonString1;
+        serializeJson(doc, jsonString);
+        DEBUG_SERIAL.println(jsonString);
+        DEBUG_SERIAL.println(doc["message"].as<String>().c_str());
+        websocket.sendTXT(jsonString);
+        jsonString = "";
+        jsonString1 = "";
     }
-    doc["message"] = "溫度:" + String(temperature) + "\t" + "濕度:" + String(humidity);
-    serializeJson(doc, jsonString);
-    DEBUG_SERIAL.println(doc["message"].as<String>().c_str());
-    websocket.sendTXT(jsonString);
-    jsonString = "";
 }
 
 void setup()
@@ -116,7 +125,7 @@ void setup()
     // webSocketClient.beginSSL(host, 443, path);
     websocket.onEvent(webSocketEvent);
     websocket.setReconnectInterval(5000);
-
+    dht.begin();
     pinMode(LED_BUILTIN, OUTPUT);
 }
 
@@ -129,4 +138,5 @@ void loop()
         sendData();
         previousMillis = currentMillis;
     }
+   
 }
