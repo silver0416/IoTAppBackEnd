@@ -216,6 +216,8 @@
                 "C:\\Users\\walto\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.4\\cores\\esp32",
                 "C:\\Users\\walto\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.4\\variants\\nodemcu-32s",
                 "C:\\Users\\walto\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.4\\libraries\\WiFi\\src",
+                "C:\\Users\\walto\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.4\\libraries\\EEPROM\\src",
+                "C:\\Users\\walto\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.4\\libraries\\HTTPClient\\src",
                 "C:\\Users\\walto\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\2.0.4\\libraries\\WiFiClientSecure\\src",
                 "D:\\Documents\\Arduino\\libraries\\WebSockets-2.3.6\\src",
                 "D:\\Documents\\Arduino\\libraries\\ArduinoJson\\src",
