@@ -10,7 +10,7 @@ sqlalchemy == 1.4.39
 dj_rest_auth == 2.2.5
 django-allauth == 0.51.0
 channels==3.0.5
-# tuya-connector-python == 0.1.2
+greenlet == 2.0.0a2
 channels_redis==4.0.0b1
 django-guardian == 2.4.0
 django-hashid-field == 3.3.5
