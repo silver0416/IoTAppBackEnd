@@ -1,7 +1,7 @@
 {
-    "sketch": "MQ7_CO_WebClient.ino",
     "configuration": "FlashFreq=40,UploadSpeed=115200,DebugLevel=none",
     "board": "esp32:esp32:nodemcu-32s",
     "port": "COM3",
-    "output": "./build"
+    "output": "./build",
+    "sketch": "IR_WebClient.ino"
 }

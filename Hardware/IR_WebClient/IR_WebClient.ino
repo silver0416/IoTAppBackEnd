@@ -6,8 +6,8 @@
 #include "PinDefinitionsAndMore.h" // Define macros for input and output pin etc.
 #include <IRremote.hpp>
 
-const char *ssid = "iotTest";
-const char *password = "12345678";
+const char *ssid = "113";
+const char *password = "77777777";
 
 WebSocketsClient websocket;
 
@@ -27,6 +27,7 @@ StaticJsonDocument<100> doc;
 String jsonString;
 int interval = 60000;
 unsigned long previousMillis = 0;
+const uint16_t rawData_power[67] = {9980, 4420, 630, 620, 580, 620, 580, 670, 580, 570, 630, 620, 580, 620, 580, 670, 580, 1670, 630, 1670, 630, 1670, 630, 1670, 630, 1720, 580, 1770, 580, 1720, 580, 1720, 580, 620, 580, 620, 630, 1720, 580, 620, 580, 620, 630, 1720, 580, 620, 580, 620, 630, 620, 580, 1720, 580, 620, 580, 1720, 630, 1670, 630, 620, 580, 1770, 530, 1770, 580, 1670, 630}; // Protocol=NEC Address=0x80 Command=0x12 Raw-Data=0xED127F80 32 bits LSB first
 
 void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
 {
@@ -54,11 +55,9 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     {
       digitalWrite(LED_BUILTIN, HIGH);
       Serial.println(F("Send Raw Data(16 bit array format)"));
-      Serial.flush();
+      // Serial.flush();
 
-      uint16_t rawData[67] = {9980, 4420, 630, 620, 580, 620, 580, 670, 580, 570, 630, 620, 580, 620, 580, 670, 580, 1670, 630, 1670, 630, 1670, 630, 1670, 630, 1720, 580, 1770, 580, 1720, 580, 1720, 580, 620, 580, 620, 630, 1720, 580, 620, 580, 620, 630, 1720, 580, 620, 580, 620, 630, 620, 580, 1720, 580, 620, 580, 1720, 630, 1670, 630, 620, 580, 1770, 530, 1770, 580, 1670, 630}; // Protocol=NEC Address=0x80 Command=0x12 Raw-Data=0xED127F80 32 bits LSB first
-
-      IrSender.sendRaw(rawData, sizeof(rawData) / sizeof(rawData[0]), NEC_KHZ);
+      IrSender.sendRaw(rawData_power, sizeof(rawData_power) / sizeof(rawData_power[0]), NEC_KHZ);
     }
     else if (doc["message"] == "light")
     {
@@ -145,6 +144,19 @@ void setup()
   websocket.setReconnectInterval(5000);
 
   pinMode(LED_BUILTIN, OUTPUT);
+
+#if defined(__AVR_ATmega32U4__) || defined(SERIAL_PORT_USBVIRTUAL) || defined(SERIAL_USB) /*stm32duino*/ || defined(USBCON) /*STM32_stm32*/ || defined(SERIALUSB_PID) || defined(ARDUINO_attiny3217)
+  delay(4000); // To be able to connect Serial monitor after reset or power up and before first print out. Do not wait for an attached Serial Monitor!
+#endif
+  // Just to know which program is running on my Arduino
+  Serial.println(F("START " __FILE__ " from " __DATE__ "\r\nUsing library version " VERSION_IRREMOTE));
+
+#if defined(IR_SEND_PIN)
+  IrSender.begin(); // Start with IR_SEND_PIN as send pin and enable feedback LED at default feedback LED pin
+#else
+  IrSender.begin(4, ENABLE_LED_FEEDBACK); // Specify send pin and enable feedback LED at default feedback LED pin
+#endif
+  Serial.println(F("Ready to send IR signals at pin " STR(IR_SEND_PIN)));
 }
 
 void loop()

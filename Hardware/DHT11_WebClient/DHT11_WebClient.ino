@@ -10,26 +10,27 @@
 #define EEPROM_SIZE 200           // EEPROM size
 #define WiFi_rst 0
 #define DEBUG_SERIAL Serial
+unsigned long rst_millis;
 
 //宣告DHT11資料讀取物件
 #define DHTPIN 4
 #define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+float temperature;
+float humidity;
+
 
 String ssid; // string variable to store ssid
 String pss;  // string variable to store password
 String customData;
 char *aes = "McQfTjWnZr4u7x!A"; // AES key
-unsigned long rst_millis;
 
 HTTPClient http;
 WebSocketsClient websocket;
-
 WiFiClient client;
 
-char path[] = "/ws/device/temp/";
-char host[] = "192.168.1.14";
-String request = "http://192.168.1.14:8000/auth/device_data/";
-
+char host[] = "api.bap5.cc";
+String request = "https://api.bap5.cc/auth/device_data/";
 const uint16_t port = 8000;
 
 StaticJsonDocument<200> doc;
@@ -37,17 +38,16 @@ StaticJsonDocument<200> doc1;
 StaticJsonDocument<200> doc2;
 StaticJsonDocument<200> doc3;
 
-DHT dht(DHTPIN, DHTTYPE);
 
 // 宣告讀取溫溼度的變數
 String jsonString;
 String jsonString1;
 String jsonString2;
 String jsonString3;
-float temperature;
-float humidity;
-int interval = 5000;
-unsigned long previousMillis = 0;
+int intervalRestful = 60000;
+int intervalWebsocket = 10000;
+unsigned long previousMillisRestful = 0;
+unsigned long previousMillisWebSocket = 0;
 
 void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info)
 {
@@ -224,7 +224,6 @@ void setup()
             delay(500);
             DEBUG_SERIAL.print(".");
         }
-        digitalWrite(LED_BUILTIN, HIGH); // Turn on LED
         DEBUG_SERIAL.println("WiFi Connected.");
 
         DEBUG_SERIAL.print("IP Address: ");
@@ -246,16 +245,9 @@ void setup()
     {
         DEBUG_SERIAL.println("WiFi Connected");
     }
-
     delay(3000);
-    http.addHeader("Content-Type", "application/json");
-    http.begin(request);
-
-    websocket.begin(host, port, path);
-    // webSocketClient.beginSSL(host, 443, path);
-    websocket.onEvent(webSocketEvent);
-    websocket.setReconnectInterval(5000);
-    dht.begin();
+    setEnviroment();
+   
 }
 
 void loop()
@@ -279,12 +271,17 @@ void loop()
         delay(500);
         ESP.restart(); // Restart ESP
     }
-    unsigned long currentMillis = millis();
-    if (currentMillis - previousMillis >= interval)
+    unsigned long currentMillisRestful = millis();
+    if (currentMillisRestful - previousMillisRestful >= intervalRestful)
     {
         sendRestful();
+        previousMillisRestful = currentMillisRestful;
+    }
+    unsigned long currentMillisWebSocket = millis();
+    if (currentMillisWebSocket - previousMillisWebSocket >= intervalWebsocket)
+    {
         sendData();
-        previousMillis = currentMillis;
+        previousMillisWebSocket = currentMillisWebSocket;
     }
 }
 void writeStringToFlash(const char *toStore, int startAddr)
@@ -307,4 +304,16 @@ String readStringFromFlash(int startAddr)
         in[i] = EEPROM.read(startAddr + i);
     }
     return String(in);
+}
+
+void setEnviroment(){
+    
+    http.addHeader("Content-Type", "application/json");
+    http.begin(request);
+    // websocket.begin(host, port, path);
+    String url = "/ws/device/" + customData.substring(0, 8)+"/";
+    websocket.beginSSL(host, 443, url);
+    websocket.onEvent(webSocketEvent);
+    websocket.setReconnectInterval(5000);
+    dht.begin();
 }

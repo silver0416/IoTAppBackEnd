@@ -1,30 +1,47 @@
-#include "WiFi.h"
+#include <Arduino.h>
+#include <WiFi.h>
 #include "EEPROM.h"
 #include "HTTPClient.h"
-#include "ArduinoJson.h"
-#include "Arduino.h"
+#include <WiFiClientSecure.h>
+#include <WebSocketsClient.h>
+#include <ArduinoJson.h>
+#include <IRremote.hpp>
 #define LENGTH(x) (strlen(x) + 1) // length of char string
 #define EEPROM_SIZE 200           // EEPROM size
-#define WiFi_rst 0                // WiFi credential reset pin (Boot button on ESP32)
-String ssid;                      // string variable to store ssid
-String pss;                       // string variable to store password
+#define WiFi_rst 0
+#define DEBUG_SERIAL Serial
+
+String ssid; // string variable to store ssid
+String pss;  // string variable to store password
 String customData;
 char *aes = "McQfTjWnZr4u7x!A"; // AES key
 unsigned long rst_millis;
-#define DEBUG_SERIAL Serial
+
 HTTPClient http;
+WebSocketsClient websocket;
+
+WiFiClient client;
+
+char path[] = "/ws/chat/ir/";
+char host[] = "api.bap5.cc";
+String request = "https://api.bap5.cc/auth/device_data/";
+
+const uint16_t port = 8000;
+
 StaticJsonDocument<200> doc;
+StaticJsonDocument<200> doc1;
 StaticJsonDocument<200> doc2;
+StaticJsonDocument<200> doc3;
+
+// 宣告讀取溫溼度的變數
 String jsonString;
 String jsonString1;
-int interval = 60000;
+String jsonString2;
+String jsonString3;
+float temperature;
+float humidity;
+int interval = 5000;
 unsigned long previousMillis = 0;
-String request = "http://192.168.1.14:8000/auth/device_data/";
-
-#include <MQUnifiedsensor.h>
-MQUnifiedsensor MQ7("ESP-32", 3.3, 12, 32, "MQ-7");
-float COppm;
-
 
 void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info)
 {
@@ -56,7 +73,7 @@ void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info)
 
       DEBUG_SERIAL.printf("RVD_DATA:%s\n", customData.c_str());
       // DEBUG_SERIAL.println("RVD_DATA");
-      // DEBUG_SERIAL.write(rvd_data, 33);
+      // DEBUG_SERIAL.write(rvd_data, 64);
       // DEBUG_SERIAL.printf("\n");
     }
   }
@@ -64,30 +81,98 @@ void WiFiEvent(WiFiEvent_t event, WiFiEventInfo_t info)
   }
 }
 
-void sendData(){
-  JsonObject root = doc.to<JsonObject>();
-  JsonObject root1 = doc2.to<JsonObject>();
-  if (digitalRead(LED_BUILTIN) == HIGH)
+void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
+{
+
+  switch (type)
   {
-    MQ7.update();                   // Update data, the arduino will be read the voltage on the analog pin
-    COppm = MQ7.readSensor(); // Sensor will read PPM concentration using the model and a and b values setted before or in the setup
-  doc2["COppm"] = COppm;
-  serializeJson(doc2, jsonString1);
-  doc["data_status"] = jsonString1;
-  doc["home"] = customData.substring(0, 8);
-  doc["device"] = customData.substring(8, 44);
-  doc["user"] = customData.substring(44, customData.length());
-  serializeJson(doc, jsonString);
-  http.addHeader("Content-Type", "application/json");
-  http.POST(jsonString);
-  DEBUG_SERIAL.println(jsonString);
-  DEBUG_SERIAL.println(doc["data_status"].as<String>().c_str());
-  jsonString = "";
-  jsonString1 = "";
+  case WStype_DISCONNECTED:
+    DEBUG_SERIAL.printf("[WSc] Disconnected!\n");
+    digitalWrite(LED_BUILTIN, LOW);
+    break;
+  case WStype_CONNECTED:
+    DEBUG_SERIAL.printf("[WSc] Connected to url: %s\n", payload);
+    digitalWrite(LED_BUILTIN, HIGH);
+    // send message to server when Connected
+    // webSocketClient.sendTXT("Connected");
+    break;
+  case WStype_TEXT:
+    if (deserializeJson(doc, payload))
+    {
+      DEBUG_SERIAL.printf("[WSc] DeserializeJson() failed: %s\n", deserializeJson(doc, payload).c_str());
+      return;
+    }
+    DEBUG_SERIAL.printf("[WSc] get text: %s\n", doc["message"].as<String>().c_str());
+    if (doc["message"] == "power")
+    {
+      digitalWrite(LED_BUILTIN, HIGH);
+      Serial.println(F("Send Raw Data(16 bit array format)"));
+      Serial.flush();
+
+      uint16_t rawData[67] = {9980, 4420, 630, 620, 580, 620, 580, 670, 580, 570, 630, 620, 580, 620, 580, 670, 580, 1670, 630, 1670, 630, 1670, 630, 1670, 630, 1720, 580, 1770, 580, 1720, 580, 1720, 580, 620, 580, 620, 630, 1720, 580, 620, 580, 620, 630, 1720, 580, 620, 580, 620, 630, 620, 580, 1720, 580, 620, 580, 1720, 630, 1670, 630, 620, 580, 1770, 530, 1770, 580, 1670, 630}; // Protocol=NEC Address=0x80 Command=0x12 Raw-Data=0xED127F80 32 bits LSB first
+
+      IrSender.sendRaw(rawData, sizeof(rawData) / sizeof(rawData[0]), NEC_KHZ);
+    }
+    else if (doc["message"] == "light")
+    {
+      /* code */
+      digitalWrite(LED_BUILTIN, HIGH);
+      Serial.println(F("Send Raw Data(16 bit array format)"));
+      Serial.flush();
+
+      uint16_t rawData[67] = {10030, 4520, 580, 620, 630, 620, 580, 620, 630, 620, 630, 570, 630, 620, 630, 570, 630, 1720, 580, 1720, 630, 1670, 630, 1720, 630, 1670, 630, 1670, 680, 1670, 630, 1670, 630, 620, 630, 570, 680, 1620, 680, 1670, 630, 1670, 630, 1670, 680, 520, 680, 570, 630, 570, 680, 1620, 680, 570, 630, 570, 630, 570, 630, 570, 630, 1720, 630, 1670, 630, 1670, 630}; // Protocol=NEC Address=0x80 Command=0x1E Raw-Data=0xE11E7F80 32 bits LSB first
+
+      IrSender.sendRaw(rawData, sizeof(rawData) / sizeof(rawData[0]), NEC_KHZ);
+    }
+
+    else if (doc["message"] == "sp_up")
+    {
+      /* code */
+      digitalWrite(LED_BUILTIN, HIGH);
+      Serial.println(F("Send Raw Data(16 bit array format)"));
+      Serial.flush();
+
+      uint16_t rawData[67] = {10080, 4420, 680, 570, 630, 570, 630, 620, 630, 570, 630, 570, 680, 570, 630, 570, 630, 1670, 630, 1670, 680, 1620, 630, 1720, 630, 1670, 630, 1670, 630, 1720, 630, 1670, 630, 620, 680, 1670, 630, 570, 680, 570, 680, 1670, 630, 570, 680, 570, 630, 620, 630, 570, 680, 570, 630, 1670, 630, 1720, 630, 570, 680, 1670, 630, 1670, 630, 1670, 630, 1720, 630}; // Protocol=NEC Address=0x80 Command=0x9 Raw-Data=0xF6097F80 32 bits LSB first
+
+      IrSender.sendRaw(rawData, sizeof(rawData) / sizeof(rawData[0]), NEC_KHZ);
+    }
+
+    else if (doc["message"] == "sp_dw")
+
+    {
+      /* code */
+      digitalWrite(LED_BUILTIN, HIGH);
+      Serial.println(F("Send Raw Data(16 bit array format)"));
+      Serial.flush();
+
+      uint16_t rawData[67] = {10080, 4470, 580, 670, 580, 620, 580, 670, 580, 620, 580, 670, 580, 570, 630, 620, 630, 1670, 630, 1670, 630, 1670, 630, 1720, 580, 1720, 580, 1720, 630, 1670, 630, 1720, 580, 620, 630, 1670, 630, 1720, 630, 1670, 630, 1670, 630, 1720, 580, 620, 630, 620, 580, 620, 580, 620, 630, 570, 630, 620, 580, 620, 630, 620, 580, 1720, 630, 1670, 580, 1720, 630}; // Protocol=NEC Address=0x80 Command=0x1F Raw-Data=0xE01F7F80 32 bits LSB first
+
+      IrSender.sendRaw(rawData, sizeof(rawData) / sizeof(rawData[0]), NEC_KHZ);
+    }
+    break;
   }
 }
 
-void setup() {
+void sendData()
+{
+  JsonObject root = doc.to<JsonObject>();
+  if (digitalRead(LED_BUILTIN) == HIGH)
+  {
+    JsonObject root = doc.to<JsonObject>();
+    doc["message"] = "";
+    serializeJson(doc, jsonString);
+    DEBUG_SERIAL.println(doc["message"].as<String>().c_str());
+    websocket.sendTXT(jsonString);
+    jsonString = "";
+  }
+}
+
+void sendRestful()
+{
+}
+
+void setup()
+{
 
   DEBUG_SERIAL.begin(115200);
   DEBUG_SERIAL.setDebugOutput(true);
@@ -160,33 +245,21 @@ void setup() {
   else
   {
     DEBUG_SERIAL.println("WiFi Connected");
-    digitalWrite(LED_BUILTIN, HIGH); // Turn on LED
   }
-  
-  MQ7.setRegressionMethod(1); //_PPM =  a*ratio^b
-  MQ7.setA(99.042); MQ7.setB(-1.518); // Configurate the ecuation values to get CO concentration
-  MQ7.init(); 
 
-  Serial.print("Calibrating please wait.");
-  float calcR0 = 0;
-  for(int i = 1; i<=10; i ++)
-  {
-    MQ7.update(); // Update data, the arduino will be read the voltage on the analog pin
-    calcR0 += MQ7.calibrate(27.5);
-    Serial.print(".");
-  }
-  MQ7.setR0(calcR0/10);
-  Serial.println("  done!.");
-  if(isinf(calcR0)) {Serial.println("Warning: Conection issue founded, R0 is infite (Open circuit detected) please check your wiring and supply"); while(1);}
-  if(calcR0 == 0){Serial.println("Warning: Conection issue founded, R0 is zero (Analog pin with short circuit to ground) please check your wiring and supply"); while(1);}
-  MQ7.serialDebug(true);
+  delay(3000);
   http.addHeader("Content-Type", "application/json");
   http.begin(request);
-  
+
+  // websocket.begin(host, port, path);
+  websocket.beginSSL(host, 443, path);
+  websocket.onEvent(webSocketEvent);
+  websocket.setReconnectInterval(5000);
 }
 
-void loop() {
-
+void loop()
+{
+  websocket.loop();
   // put your main code here, to run repeatedly:
   rst_millis = millis();
   while (digitalRead(WiFi_rst) == LOW)
@@ -208,11 +281,11 @@ void loop() {
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval)
   {
+    sendRestful();
     sendData();
     previousMillis = currentMillis;
   }
 }
-
 void writeStringToFlash(const char *toStore, int startAddr)
 {
   int i = 0;
