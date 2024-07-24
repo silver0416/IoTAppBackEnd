@@ -1,28 +1,31 @@
 FROM python:3.10-alpine
 
 ENV PYTHONBUFFERED 1
-#複製 requirements.txt進入docker 內部
-COPY ./requirements.txt /requirements.txt
-RUN pip install -r /requirements.txt
+ENV PATH="/py/bin:$PATH"
 
-#新增資料夾
-RUN mkdir /app
-#將外部的app資料夾複製進入docker內部
-COPY ./app /app
-#設定當前工作環境路徑為 /app
-WORKDIR /app
+# 安裝系統依賴
+RUN apk add --no-cache bash vim curl tk
 
+# 創建虛擬環境並安裝Python依賴
 RUN python -m venv /py && \
-    /py/bin/pip install --upgrade pip && \
-    /py/bin/pip install -r /requirements.txt && \
-    adduser --disabled-password --no-create-home app && \
-    apk add tk && \
-    apk add --no-cache bash && \
-    apk add vim && \
-    apk add curl
+    /py/bin/pip install --upgrade pip
 
-ENV PATH = "/py/bin:$PATH"
+COPY ./requirements.txt /requirements.txt
+RUN /py/bin/pip install -r /requirements.txt
 
+# 創建非root用戶
+RUN adduser --disabled-password --no-create-home app
+
+# 設置工作目錄
+WORKDIR /app
+COPY ./app /app
+
+# 創建啟動腳本
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# 切換到非root用戶
 USER app
 
-CMD [ "python","manage.py","runserver","0.0.0.0:8701"]
+# 使用啟動腳本
+CMD ["/entrypoint.sh"]

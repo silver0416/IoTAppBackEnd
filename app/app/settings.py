@@ -75,8 +75,8 @@ EMAIL_HOST_PASSWORD = secret["smtp"]["password"]
 EMAIL_PORT = secret["smtp"]["port"]
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = secret["smtp"]["from"]
-# DOMAIN = "192.168.1.14:8000"
-DOMAIN = 'api.bap5.cc'
+DOMAIN = "192.168.31.71:8071"
+# DOMAIN = 'api.bap5.cc'
 
 
 DJOSER = {
@@ -104,7 +104,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CSRF_TRUSTED_ORIGINS = ["https://api.bap5.cc"]
+# CSRF_TRUSTED_ORIGINS = ["https://api.bap5.cc"]
 
 ROOT_URLCONF = "app.urls"
 
@@ -148,12 +148,12 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-domain =  secret['account']['domain']
-srvInfo = {}
-srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
-for srv in srv_records:
-    srvInfo['port'] = srv.port
-port = srvInfo['port']
+# domain =  secret['account']['domain']
+# srvInfo = {}
+# srv_records = dns.resolver.resolve('_sql._tcp.' + domain, 'SRV')
+# for srv in srv_records:
+#     srvInfo['port'] = srv.port
+# port = srvInfo['port']
 
 
 # domain = "127.0.0.1"
@@ -161,11 +161,11 @@ port = srvInfo['port']
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "IoTApp_server",
-        "USER": secret["account"]["username"],
-        "PASSWORD": secret["account"]["password"],
-        "HOST": domain,
-        "PORT": port,
+        "NAME": os.environ.get("DATABASE_NAME"),
+        "USER": os.environ.get("DATABASE_USER"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD"),
+        "HOST": os.environ.get("DATABASE_HOST"),
+        "PORT": os.environ.get("DATABASE_PORT"),
         "OPTIONS": {
             "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
         },
